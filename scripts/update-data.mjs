@@ -14,7 +14,7 @@ const GDELT_GAP_MS = 6_000;
 const NEWS_MAX_AGE = 3 * DAY;
 const WHO_REPORT_WINDOW = 45 * DAY;
 const MIN_SCORED = 24; // losing more than a few means a source broke, so keep the last good file
-const NEWS_MAX_LAG = 10 * DAY;
+const NEWS_MAX_LAG = 4 * DAY; // GDELT is normally a day behind; more means its index has stalled
 const WIKIPEDIA_GAP_MS = 700;
 const ALERT_WINDOW = 90 * DAY;
 const ALERT_WORDS = /outbreak|cases|alert|surge|rise|rising|increase|epidemic/i;
@@ -156,7 +156,7 @@ async function newsTimeline(d) {
   const { timeline } = await gdelt(d.gdelt, "timelinevolraw", "&timespan=3m");
   const days = completeDays(timeline[0].data).map((x) => ({ ...x, date: `${x.date.slice(0, 4)}-${x.date.slice(4, 6)}-${x.date.slice(6, 8)}` }));
   const through = days.at(-1)?.date;
-  if (!through || Date.now() - Date.parse(through) > NEWS_MAX_LAG) throw new Error("news index is out of date");
+  if (!through || Date.now() - Date.parse(through) > NEWS_MAX_LAG) throw new Error(`STALE: GDELT has no complete day since ${through ?? "its last update"}`);
   const rate = days.map((x) => [x.date, (x.value / x.norm) * 1e6]);
   const perDay = days.slice(-7).reduce((a, x) => a + x.value, 0) / 7;
   const signal = dampNews(heat(rate.map(([, v]) => v), 7), perDay);
@@ -174,6 +174,7 @@ async function collectNews() {
   const deadline = Date.now() + GDELT_BUDGET_MS;
   let requests = 0;
   let failures = 0;
+  let stale = null;
 
   // The last minute is kept for the article lists below.
   while (queue.length && Date.now() < deadline - 60_000) {
@@ -181,7 +182,12 @@ async function collectNews() {
     requests++;
     try {
       news.set(d.slug, await newsTimeline(d));
-    } catch {
+    } catch (e) {
+      // A stalled index is stalled for every disease, so stop instead of spending the budget.
+      if (e.message.startsWith("STALE")) {
+        stale = e.message.slice(7);
+        break;
+      }
       failures++;
       queue.push(d);
     }
@@ -209,17 +215,22 @@ async function collectNews() {
     name: "GDELT global news index",
     url: "https://www.gdeltproject.org/",
     kind: "news volume",
-    ok: news.size > 0,
+    ok: news.size > 0 && !stale,
     items: news.size,
     checkedAt: new Date().toISOString(),
-    ...(failures ? { error: `${failures} of ${requests} requests rate-limited; older readings kept where recent` } : {}),
+    ...(stale
+      ? { error: `${stale}, so news is left out of scores until it catches up` }
+      : failures
+        ? { error: `${failures} of ${requests} requests rate-limited; older readings kept where recent` }
+        : {}),
   });
   return { news, articles };
 }
 
 function carriedNews(slug, fresh) {
   const old = previousBySlug.get(slug)?.signals?.news;
-  return fresh ?? (old && Date.now() - Date.parse(old.fetchedAt) < NEWS_MAX_AGE ? old : null);
+  const current = (n) => n && Date.now() - Date.parse(n.fetchedAt) < NEWS_MAX_AGE && Date.now() - Date.parse(n.through) < NEWS_MAX_LAG;
+  return fresh ?? (current(old) ? old : null);
 }
 
 async function main() {

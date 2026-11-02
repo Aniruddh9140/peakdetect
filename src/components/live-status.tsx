@@ -64,11 +64,12 @@ export function AiLabel({ data }: { data: LiveData }) {
   );
 }
 
-export function SourceLinks({ urls }: { urls: string[] }) {
+// onDark: blue-600 is unreadable on the dark banners, so those use a light link colour.
+export function SourceLinks({ urls, onDark = false }: { urls: string[]; onDark?: boolean }) {
   return (
     <span className="inline-flex flex-wrap gap-x-2 gap-y-0.5">
       {urls.map((url) => (
-        <a key={url} href={url} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline">
+        <a key={url} href={url} target="_blank" rel="noreferrer" className={cn("text-xs hover:underline", onDark ? "text-cyan-300" : "text-blue-600")}>
           {new URL(url).hostname.replace(/^www\./, "")}
         </a>
       ))}

@@ -6,7 +6,7 @@ import { Activity, AlertTriangle, ArrowUpRight, Bell, Sparkles, TrendingUp } fro
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, StatCard } from "@/components/ui/card";
 import { AiLabel, DataNotice, PageSkeleton, PhaseBadge, ScoreBar, SourceLinks } from "@/components/live-status";
 import { TrendChart } from "@/components/trend-chart";
-import { REGIONS, inRegion, useLiveData } from "@/lib/live-data";
+import { REGIONS, inRegion, topAssessed, useLiveData } from "@/lib/live-data";
 import { relativeTime } from "@/lib/utils";
 
 const DAY = 86_400_000;
@@ -20,6 +20,7 @@ export default function DashboardOverview() {
   const rising = shown.filter((d) => d.displayPhase === "rising");
   const lead = peaking[0] ?? shown[0];
   const peakingCount = diseases.filter((d) => d.displayPhase === "peaking").length;
+  const top = topAssessed(diseases);
   const alerts = (data?.alerts ?? []).filter((a) => region === "Worldwide" || a.regions.includes(region));
   const recentAlerts = alerts.filter((a) => Date.parse(data?.generatedAt ?? "") - Date.parse(a.date ?? "") < 30 * DAY).length;
 
@@ -60,10 +61,14 @@ export default function DashboardOverview() {
               </div>
               <div className="min-w-0">
                 <h2 className="font-semibold">
-                  {data.ai ? data.ai.headline : `${peakingCount} ${peakingCount === 1 ? "disease is" : "diseases are"} scoring as peaking`}
+                  {top?.ai ? `${top.name}: ${top.ai.summary}` : `${peakingCount} ${peakingCount === 1 ? "disease is" : "diseases are"} scoring as peaking`}
                 </h2>
+                {top?.ai && (
+                  <p className="text-sm text-slate-300 mt-1">
+                    Source: <SourceLinks urls={top.ai.sources} onDark />. Written by a small AI model from this report; it can make mistakes.
+                  </p>
+                )}
                 <p className="text-sm text-slate-300 mt-1 max-w-3xl leading-relaxed">
-                  {data.ai && `${data.ai.overview} This summary is written by a small AI model and can make mistakes; check the linked reports. `}
                   Scores compare each disease with its own past year. They do not count how many people are sick or say how likely you are to catch anything.
                 </p>
               </div>

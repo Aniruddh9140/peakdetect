@@ -47,8 +47,6 @@ export type LiveData = {
   diseases: LiveDisease[];
   alerts: (Link & { slug: string | null; regions: string[] })[];
   ai: {
-    headline: string;
-    overview: string;
     assessments: Assessment[];
     emerging: { name: string; summary: string; where: string[]; sources: string[] }[];
     generatedAt: string;
@@ -96,5 +94,8 @@ export function useLiveData() {
 }
 
 export const isStale = (data: LiveData) => Date.now() - Date.parse(data.generatedAt) > data.updateEveryHours * 4 * 3_600_000;
+
+// The AI disease summary to lead with: a peaking one first, otherwise the highest-scoring one it assessed.
+export const topAssessed = (diseases: Disease[]) => diseases.find((d) => d.ai?.phase === "peaking") ?? diseases.find((d) => d.ai);
 
 export const inRegion = (d: Disease, region: string) => region === "Worldwide" || Boolean(d.regions[region]);

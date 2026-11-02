@@ -34,7 +34,7 @@ Each signal compares a disease with its own history, so 100 means "at its highes
 
 If a source fails, the run continues and the Data Sources page shows the failure. If too few diseases can be scored, the run stops and the last good data stays online.
 
-GDELT rate-limits heavily, so each run updates as many diseases as it can, stalest first, and keeps readings up to 3 days old for the rest.
+GDELT rate-limits heavily, so each run updates as many diseases as it can, stalest first, and keeps readings up to 3 days old for the rest. News only counts while GDELT is current: if its index falls more than 4 days behind, news is left out of scores (the Data Sources page says so) and returns once GDELT catches up.
 
 ## Run it locally
 

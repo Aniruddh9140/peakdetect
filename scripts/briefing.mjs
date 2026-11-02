@@ -28,8 +28,6 @@ Rules:
 
 Reply with only a JSON object, no markdown, in this shape:
 {
-  "headline": "one sentence on the most important thing right now",
-  "overview": "2-3 sentences on the current global picture",
   "assessments": [
     {"slug": "slug from the input", "phase": "peaking|rising|baseline|falling", "summary": "1-2 sentences", "where": ["places"], "sources": ["https://..."]}
   ],
@@ -92,10 +90,8 @@ export function validate(raw, slugs, sources) {
       sources: cited(e?.sources),
     }))
     .filter((e) => e.name && e.summary && e.sources.length);
-  const headline = text(raw.headline, 300);
-  const overview = text(raw.overview, 900);
-  if (!headline || !overview || !assessments.length) throw new Error("briefing failed validation");
-  return { headline, overview, assessments, emerging };
+  if (!assessments.length) throw new Error("briefing failed validation");
+  return { assessments, emerging };
 }
 
 // Node's fetch gives up when response headers take over 5 minutes, and a CPU model can
@@ -121,8 +117,6 @@ export async function writeBriefing(rows, headlines, url) {
   const schema = {
     type: "object",
     properties: {
-      headline: { type: "string" },
-      overview: { type: "string" },
       assessments: {
         type: "array",
         items: {
@@ -136,7 +130,7 @@ export async function writeBriefing(rows, headlines, url) {
         items: { type: "object", properties: { name: { type: "string" }, summary: { type: "string" }, where: list, sources: list }, required: ["name", "summary", "where", "sources"] },
       },
     },
-    required: ["headline", "overview", "assessments", "emerging"],
+    required: ["assessments", "emerging"],
   };
 
   const { message } = JSON.parse(

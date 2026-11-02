@@ -1,12 +1,14 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
-import { useLiveData } from "@/lib/live-data";
+import { SourceLinks } from "@/components/live-status";
+import { topAssessed, useLiveData } from "@/lib/live-data";
 import { PHASE_STYLES, cn, relativeTime } from "@/lib/utils";
 
 export function LiveHero() {
   const { data, diseases, error } = useLiveData();
   const top = diseases.slice(0, 5);
+  const lead = topAssessed(diseases);
 
   return (
     <div className="relative">
@@ -44,11 +46,11 @@ export function LiveHero() {
           })}
         </div>
 
-        {data?.ai && (
+        {lead?.ai && (
           <div className="mt-5 p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-start gap-2.5">
             <Sparkles className="w-4 h-4 text-cyan-400 mt-0.5 shrink-0" />
             <p className="text-xs text-cyan-100 leading-snug">
-              <strong>AI briefing:</strong> {data.ai.headline}
+              <strong>AI briefing, {lead.name}:</strong> {lead.ai.summary} Source: <SourceLinks urls={lead.ai.sources} onDark />. Written by a small AI model; it can make mistakes.
             </p>
           </div>
         )}

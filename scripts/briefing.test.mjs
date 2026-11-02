@@ -5,8 +5,6 @@ import { parseJson, validate, writeBriefing } from "./briefing.mjs";
 
 const SEEN = "https://www.who.int/report";
 const reply = (over = {}) => ({
-  headline: "Flu is climbing.",
-  overview: "Activity is rising.",
   assessments: [{ slug: "influenza", phase: "rising", summary: "Up.", where: ["Europe"], sources: [SEEN] }],
   emerging: [],
   ...over,
@@ -100,7 +98,7 @@ test("writeBriefing waits longer than fetch's 5-minute header limit would allow"
   try {
     const rows = [{ slug: "influenza", name: "Flu", score: 80, phase: "rising", factors: [] }];
     const out = await writeBriefing(rows, [{ title: FLU_TITLE, url: SEEN, source: "WHO", date: "2026-11-01" }], `http://127.0.0.1:${server.address().port}`);
-    assert.equal(out.headline, "Flu is climbing.");
+    assert.equal(out.assessments[0].slug, "influenza");
   } finally {
     server.close();
   }
