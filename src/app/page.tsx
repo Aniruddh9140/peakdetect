@@ -53,7 +53,7 @@ export default function LandingPage() {
               </span>
             </h1>
             <p className="text-lg text-slate-300 max-w-xl mb-8 leading-relaxed">
-              ViraWatch AI tracks which diseases are at their peak today. It reads WHO and CDC data, English-language news and Wikipedia readership, then an AI researches the web and explains what is happening, with sources you can check.
+              ViraWatch AI tracks which diseases are at their peak today. It reads WHO and CDC data, English-language news and Wikipedia readership, then an AI reads the latest official reports and explains what is happening, with sources you can check.
             </p>
             <Link
               href="/dashboard/"
@@ -81,7 +81,7 @@ export default function LandingPage() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {[
             { icon: TrendingUp, title: "Peak detection", desc: "Each disease is compared with its own past year, so you can see what is unusually high right now.", color: "from-red-500 to-pink-500" },
-            { icon: Brain, title: "AI web research", desc: "An AI searches the web once a day, checks the top signals against official sources and writes a short briefing.", color: "from-purple-500 to-pink-500" },
+            { icon: Brain, title: "AI briefing", desc: "Once a day a free, open AI model reads the latest WHO and health-agency reports, checks them against the signals and writes a short briefing.", color: "from-purple-500 to-pink-500" },
             { icon: Globe2, title: "Global coverage", desc: "28 diseases, from flu and dengue to Ebola and Nipah. Region filters show diseases named in reports from that region; scores themselves are worldwide.", color: "from-blue-500 to-cyan-500" },
             { icon: Bell, title: "Official alerts", desc: "The latest outbreak notices from WHO, ECDC, UKHSA and CDC, gathered in one place.", color: "from-amber-500 to-orange-500" },
             { icon: Shield, title: "Prevention guidance", desc: "Practical steps for each disease, including what actually helps against mosquitoes, water and airborne spread.", color: "from-emerald-500 to-teal-500" },
@@ -115,7 +115,7 @@ export default function LandingPage() {
           {[
             { step: "01", title: "Collect", desc: "Pull hospital and lab data, outbreak notices, news volume and Wikipedia readership." },
             { step: "02", title: "Score", desc: "Compare each disease with its own recent history to get a 0-100 peak score." },
-            { step: "03", title: "Research", desc: "AI searches the web, verifies the strongest signals and cites what it finds." },
+            { step: "03", title: "Research", desc: "AI reads official reports, checks the strongest signals and cites what it used." },
             { step: "04", title: "Publish", desc: "The site rebuilds with the new data, and open pages refresh themselves." },
           ].map((s, i) => (
             <div key={s.step} className="relative">

@@ -39,10 +39,30 @@ jobs:
 
       - run: npm test
 
+      # The free AI model is cached so it downloads once, not on every run.
+      - name: Cache AI model
+        if: github.event_name != 'push'
+        uses: actions/cache@v4
+        with:
+          path: ~/ollama-models
+          key: ollama-qwen3-4b
+
+      - name: Start built-in AI
+        if: github.event_name != 'push'
+        env:
+          OLLAMA_VERSION: 0.40.6
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          sudo systemctl stop ollama || true
+          OLLAMA_MODELS="$HOME/ollama-models" nohup ollama serve > "$RUNNER_TEMP/ollama.log" 2>&1 &
+          timeout 60 sh -c 'until curl -s http://127.0.0.1:11434 > /dev/null; do sleep 1; done'
+          ollama pull qwen3:4b
+
       - name: Collect live data
         if: github.event_name != 'push'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OLLAMA_URL: http://127.0.0.1:11434
         run: npm run update-data
 
       # The commit keeps the last good data and counts as activity, which stops

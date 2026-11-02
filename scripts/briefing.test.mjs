@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import http from "node:http";
-import { parseJson, validate, writeBriefing } from "./briefing.mjs";
+import { parseJson, validate, writeBriefing, writeLocalBriefing } from "./briefing.mjs";
 
 const SEEN = "https://www.who.int/report";
 const reply = (over = {}) => ({
@@ -96,6 +96,38 @@ test("writeBriefing continues a paused search and accepts URLs the search return
     assert.equal(requests[0].body.tools[0].type, "web_search_20260209");
     assert.match(requests[0].headers["anthropic-beta"], /server-side-fallback-2026-07-01/);
     assert.equal(requests[1].body.messages.at(-1).role, "assistant");
+  } finally {
+    server.close();
+  }
+});
+
+test("writeLocalBriefing asks Ollama for schema-shaped JSON and drops invented citations", async () => {
+  let request;
+  const content = JSON.stringify(reply({
+    assessments: [
+      { slug: "influenza", phase: "rising", summary: "Up.", where: [], sources: [SEEN] },
+      { slug: "influenza", phase: "peaking", summary: "Made up.", where: [], sources: ["https://invented.example/"] },
+    ],
+  }));
+  const server = http.createServer((req, res) => {
+    let body = "";
+    req.on("data", (c) => (body += c));
+    req.on("end", () => {
+      request = { url: req.url, body: JSON.parse(body) };
+      res.writeHead(200, { "content-type": "application/json" });
+      res.end(JSON.stringify({ message: { role: "assistant", content } }));
+    });
+  });
+  await new Promise((r) => server.listen(0, "127.0.0.1", r));
+  try {
+    const rows = [{ slug: "influenza", name: "Flu", score: 80, phase: "rising", factors: [] }];
+    const out = await writeLocalBriefing(rows, [{ title: "t", url: SEEN, source: "WHO", date: "2026-11-01", summary: "WHO says flu is up." }], `http://127.0.0.1:${server.address().port}`);
+    assert.equal(request.url, "/api/chat");
+    assert.equal(request.body.think, false);
+    assert.deepEqual(request.body.format.properties.assessments.items.properties.slug.enum, ["influenza"]);
+    assert.match(request.body.messages[1].content, /WHO says flu is up/);
+    assert.equal(out.assessments.length, 1);
+    assert.equal(out.model, "qwen3:4b");
   } finally {
     server.close();
   }

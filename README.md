@@ -11,15 +11,16 @@ A live tracker of which diseases are at their peak right now. It runs entirely o
 
 The site appears at `https://<your-username>.github.io/<repo-name>/`. After that it updates itself every 6 hours.
 
-## Turn on the AI briefing
+## The AI briefing
 
-The site works without AI: it ranks diseases from measured data and says the AI briefing is off. To add the briefing:
+Once a day the workflow starts a free, open AI model ([Qwen3 4B](https://ollama.com/library/qwen3), Apache 2.0) on GitHub's own machine using [Ollama](https://ollama.com). It reads the measured signals and the latest WHO, ECDC, UKHSA and CDC reports, then writes a short briefing. Every claim must cite one of those reports; anything citing a link it was not given is dropped before publishing. This costs nothing and needs no key.
+
+The free model is small and runs without a GPU, so it cannot search the web and writes less well than a large model. For a stronger briefing that also searches the web, add a paid Claude key:
 
 1. Create a key at [platform.claude.com](https://platform.claude.com/) and set a monthly spend limit there.
 2. In the repository, open **Settings > Secrets and variables > Actions** and add a secret named `ANTHROPIC_API_KEY`.
-3. Run the workflow again.
 
-Claude then runs once a day. It reads the signals, searches the web (up to 8 searches), and writes a briefing where each claim cites a source. Any claim citing a page it did not actually see is dropped before publishing. The API is paid per use, so watch the usage page for the first few days. To change how often it runs, edit `AI_EVERY_MS` in `scripts/update-data.mjs`.
+With a key set, Claude replaces the free model. To change how often the AI runs, edit `AI_EVERY_MS` in `scripts/update-data.mjs`.
 
 ## How it works
 

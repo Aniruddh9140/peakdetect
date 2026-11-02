@@ -2,7 +2,7 @@
 // asks Claude for a cited briefing and writes public/data/latest.json for the site.
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { completeDays, dampNews, factors, heat, regionsIn, score, trendTable, weekly } from "./analyze.mjs";
-import { MODEL, writeBriefing } from "./briefing.mjs";
+import { MODEL, writeBriefing, writeLocalBriefing } from "./briefing.mjs";
 
 const OUTPUT = "public/data/latest.json";
 const USER_AGENT = "ViraWatch/1.0 (open-source disease dashboard)";
@@ -80,13 +80,14 @@ function parseFeed(xml, source) {
 }
 
 async function who() {
-  const url = "https://www.who.int/api/news/diseaseoutbreaknews?$top=30&$orderby=PublicationDateAndTime%20desc&$select=Title,OverrideTitle,UseOverrideTitle,PublicationDateAndTime,ItemDefaultUrl";
+  const url = "https://www.who.int/api/news/diseaseoutbreaknews?$top=30&$orderby=PublicationDateAndTime%20desc&$select=Title,OverrideTitle,UseOverrideTitle,PublicationDateAndTime,ItemDefaultUrl,Summary";
   const { value } = await get(url);
   return value.map((r) => ({
     title: r.UseOverrideTitle ? r.OverrideTitle : r.Title,
     url: `https://www.who.int/emergencies/disease-outbreak-news/item${r.ItemDefaultUrl}`,
     source: "WHO",
     date: isoDay(r.PublicationDateAndTime),
+    summary: decode(r.Summary ?? "").slice(0, 600),
   }));
 }
 
@@ -314,14 +315,20 @@ async function main() {
   let ai = fresh(previous?.ai) ? previous.ai : null;
   // Counting attempts, not successes, stops a failing briefing from being paid for every 6 hours.
   let aiAttemptedAt = previous?.aiAttemptedAt ?? previous?.ai?.generatedAt ?? null;
-  if (process.env.ANTHROPIC_API_KEY && Date.now() - Date.parse(aiAttemptedAt ?? "1970-01-01") > AI_EVERY_MS) {
+  // Claude with web search if a key is set, otherwise the free open model the workflow starts.
+  const claude = Boolean(process.env.ANTHROPIC_API_KEY);
+  const ollama = process.env.OLLAMA_URL;
+  const [aiName, aiUrl] = claude ? ["Claude web research", "https://www.anthropic.com/"] : ["Built-in AI (Qwen3 4B, open model)", "https://ollama.com/library/qwen3"];
+  if ((claude || ollama) && Date.now() - Date.parse(aiAttemptedAt ?? "1970-01-01") > AI_EVERY_MS) {
     aiAttemptedAt = new Date().toISOString();
     // Only official and expert sources go in: open-web headlines are an injection risk.
     const recent = [...whoReports, ...feeds].filter((h) => (h.date ?? "") >= isoDay(Date.now() - 14 * DAY)).slice(0, 90);
-    ai = (await track("Claude web research", "https://www.anthropic.com/", "AI analysis", () => writeBriefing(rows, recent))) ?? ai;
+    // The small model gets a shorter list so the prompt fits its context window.
+    const write = claude ? () => writeBriefing(rows, recent) : () => writeLocalBriefing(rows.slice(0, 12), recent.slice(0, 40), ollama);
+    ai = (await track(aiName, aiUrl, "AI analysis", write)) ?? ai;
   } else {
-    const error = process.env.ANTHROPIC_API_KEY ? "No current briefing; the next attempt is within a day" : "Not set up: add an ANTHROPIC_API_KEY secret";
-    sources.push({ name: "Claude web research", url: "https://www.anthropic.com/", kind: "AI analysis", ok: Boolean(ai), items: ai ? 1 : 0, checkedAt: ai?.generatedAt ?? new Date().toISOString(), ...(ai ? {} : { error }) });
+    const error = claude || ollama ? "No current briefing; the next attempt is within a day" : "Runs in GitHub Actions, not on this machine";
+    sources.push({ name: aiName, url: aiUrl, kind: "AI analysis", ok: Boolean(ai), items: ai ? 1 : 0, checkedAt: ai?.generatedAt ?? new Date().toISOString(), ...(ai ? {} : { error }) });
   }
 
   const known = new Set(diseases.map((d) => d.slug));
@@ -330,7 +337,7 @@ async function main() {
     .filter((a) => a.date >= alertCutoff && a.url)
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, 40)
-    .map((a) => ({ ...a, slug: diseases.find((d) => d.re.test(a.title))?.slug ?? null, regions: regionsIn(a.title) }));
+    .map(({ summary, ...a }) => ({ ...a, slug: diseases.find((d) => d.re.test(a.title))?.slug ?? null, regions: regionsIn(a.title) }));
 
   await mkdir("public/data", { recursive: true });
   await writeFile(OUTPUT, JSON.stringify({
