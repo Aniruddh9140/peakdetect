@@ -1,0 +1,254 @@
+[
+  {
+    "slug": "influenza", "name": "Influenza (flu)", "category": "viral", "emoji": "🤧", "severity": "moderate", "vaccine": true,
+    "wiki": "Influenza", "gdelt": "(influenza OR \"flu season\" OR \"flu cases\")", "keywords": "(?<!bird )(?<!avian )\\b(influenza|flu)\\b",
+    "incubation": "1-4 days", "seasonality": "Winter in temperate regions; year-round in the tropics",
+    "description": "A contagious respiratory infection caused by influenza viruses. Most people recover in about a week, but it can be severe for older adults, young children, pregnant people and those with chronic conditions.",
+    "symptoms": ["fever", "cough", "sore throat", "runny nose", "muscle aches", "headache", "fatigue", "chills"],
+    "transmission": ["respiratory droplets", "airborne", "contaminated surfaces"],
+    "prevention": ["Get the seasonal flu vaccine", "Stay home while you have a fever", "Cover coughs and sneezes", "Wash hands often", "Ask a doctor early about antivirals if you are at higher risk"]
+  },
+  {
+    "slug": "covid-19", "name": "COVID-19", "category": "viral", "emoji": "🦠", "severity": "moderate", "vaccine": true,
+    "wiki": "COVID-19", "gdelt": "(covid OR \"SARS-CoV-2\")", "keywords": "covid|sars-cov-2",
+    "incubation": "2-5 days", "seasonality": "Year-round, with waves",
+    "description": "A respiratory illness caused by SARS-CoV-2. New variants keep circulating; severity is highest in older adults and people with weakened immune systems.",
+    "symptoms": ["fever", "cough", "fatigue", "loss of taste/smell", "shortness of breath", "sore throat", "headache", "muscle aches", "congestion"],
+    "transmission": ["airborne", "respiratory droplets"],
+    "prevention": ["Keep COVID-19 vaccination up to date as advised locally", "Improve indoor ventilation", "Wear a well-fitting mask in crowded indoor spaces during waves", "Test and stay away from others while sick"]
+  },
+  {
+    "slug": "rsv", "name": "Respiratory syncytial virus (RSV)", "category": "viral", "emoji": "👶", "severity": "moderate", "vaccine": true,
+    "wiki": "Respiratory_syncytial_virus", "gdelt": "(\"respiratory syncytial virus\" OR RSV)", "keywords": "\\brsv\\b|respiratory syncytial",
+    "incubation": "4-6 days", "seasonality": "Autumn and winter",
+    "description": "A common respiratory virus that usually causes cold-like symptoms but is a leading cause of bronchiolitis in infants and can be serious in older adults.",
+    "symptoms": ["runny nose", "cough", "sneezing", "fever", "wheezing", "shortness of breath"],
+    "transmission": ["respiratory droplets", "contaminated surfaces", "direct contact"],
+    "prevention": ["Ask about RSV vaccines for pregnancy and older adults, and antibodies for infants", "Keep sick contacts away from young babies", "Wash hands and clean shared toys and surfaces"]
+  },
+  {
+    "slug": "dengue", "name": "Dengue", "category": "viral", "emoji": "🦟", "severity": "severe", "vaccine": true,
+    "wiki": "Dengue_fever", "gdelt": "dengue", "keywords": "dengue",
+    "incubation": "4-10 days", "seasonality": "Rainy and monsoon seasons",
+    "description": "A mosquito-borne viral infection found across tropical and subtropical regions. Most cases are mild, but severe dengue can cause bleeding and shock and needs urgent care.",
+    "symptoms": ["fever", "headache", "pain behind eyes", "joint pain", "muscle aches", "rash", "nausea", "vomiting", "fatigue"],
+    "transmission": ["Aedes mosquito bites"],
+    "prevention": ["Remove standing water around your home", "Use insect repellent, especially in the daytime", "Wear long sleeves and use screens or nets", "Avoid aspirin and ibuprofen if dengue is possible, and see a doctor"]
+  },
+  {
+    "slug": "chikungunya", "name": "Chikungunya", "category": "viral", "emoji": "🦵", "severity": "moderate", "vaccine": true,
+    "wiki": "Chikungunya", "gdelt": "chikungunya", "keywords": "chikungunya",
+    "incubation": "3-7 days", "seasonality": "Rainy seasons",
+    "description": "A mosquito-borne virus causing sudden fever and severe joint pain, which can last for months.",
+    "symptoms": ["fever", "joint pain", "muscle aches", "headache", "rash", "fatigue"],
+    "transmission": ["Aedes mosquito bites"],
+    "prevention": ["Remove standing water around your home", "Use insect repellent and protective clothing", "Check travel vaccine advice for affected areas"]
+  },
+  {
+    "slug": "malaria", "name": "Malaria", "category": "parasitic", "emoji": "🩸", "severity": "severe", "vaccine": true,
+    "wiki": "Malaria", "gdelt": "malaria", "keywords": "malaria",
+    "incubation": "7-30 days", "seasonality": "Rainy seasons in endemic areas",
+    "description": "A life-threatening parasitic disease spread by Anopheles mosquitoes. It is preventable and curable, but needs fast diagnosis and treatment.",
+    "symptoms": ["fever", "chills", "headache", "fatigue", "nausea", "vomiting", "muscle aches"],
+    "transmission": ["Anopheles mosquito bites"],
+    "prevention": ["Sleep under insecticide-treated nets", "Take recommended preventive medicine when travelling", "Use repellent after dusk", "Get tested immediately if you have a fever after being in a malaria area"]
+  },
+  {
+    "slug": "zika", "name": "Zika", "category": "viral", "emoji": "🤰", "severity": "moderate", "vaccine": false,
+    "wiki": "Zika_fever", "gdelt": "zika", "keywords": "\\bzika\\b",
+    "incubation": "3-14 days", "seasonality": "Rainy seasons",
+    "description": "A mosquito-borne infection that is usually mild, but infection during pregnancy can cause serious birth defects.",
+    "symptoms": ["rash", "fever", "joint pain", "itchy eyes", "muscle aches", "headache"],
+    "transmission": ["Aedes mosquito bites", "sexual contact", "mother to baby"],
+    "prevention": ["Prevent mosquito bites", "If pregnant, check travel advice before visiting affected areas", "Follow guidance on safer sex after travel to affected areas"]
+  },
+  {
+    "slug": "west-nile", "name": "West Nile virus", "category": "viral", "emoji": "🦅", "severity": "moderate", "vaccine": false,
+    "wiki": "West_Nile_fever", "gdelt": "\"west nile\"", "keywords": "west nile",
+    "incubation": "2-14 days", "seasonality": "Summer and early autumn",
+    "description": "Spread by Culex mosquitoes. Most infections cause no symptoms, but a small share develop serious neurological illness.",
+    "symptoms": ["fever", "headache", "muscle aches", "joint pain", "vomiting", "diarrhea", "rash"],
+    "transmission": ["Culex mosquito bites"],
+    "prevention": ["Use repellent at dusk and dawn", "Wear long sleeves outdoors", "Empty standing water"]
+  },
+  {
+    "slug": "cholera", "name": "Cholera", "category": "bacterial", "emoji": "💧", "severity": "severe", "vaccine": true,
+    "wiki": "Cholera", "gdelt": "cholera", "keywords": "cholera",
+    "incubation": "12 hours to 5 days", "seasonality": "Linked to floods, conflict and unsafe water",
+    "description": "An acute diarrhoeal infection from contaminated water or food. It can kill within hours without treatment, but oral rehydration works well.",
+    "symptoms": ["diarrhea", "vomiting", "nausea", "dizziness", "fatigue"],
+    "transmission": ["contaminated water", "contaminated food"],
+    "prevention": ["Drink boiled or treated water", "Wash hands with soap", "Eat food that is cooked and hot", "Start oral rehydration solution at once and seek care for severe diarrhoea"]
+  },
+  {
+    "slug": "typhoid", "name": "Typhoid fever", "category": "bacterial", "emoji": "🚰", "severity": "severe", "vaccine": true,
+    "wiki": "Typhoid_fever", "gdelt": "typhoid", "keywords": "typhoid",
+    "incubation": "6-30 days", "seasonality": "Often rises in rainy seasons",
+    "description": "A bacterial infection spread through contaminated food and water, causing prolonged fever and needing antibiotic treatment.",
+    "symptoms": ["fever", "headache", "stomach pain", "fatigue", "diarrhea", "rash"],
+    "transmission": ["contaminated water", "contaminated food"],
+    "prevention": ["Get vaccinated if you live in or travel to affected areas", "Drink safe water", "Wash hands before eating"]
+  },
+  {
+    "slug": "hepatitis-a", "name": "Hepatitis A", "category": "viral", "emoji": "🟡", "severity": "moderate", "vaccine": true,
+    "wiki": "Hepatitis_A", "gdelt": "\"hepatitis A\"", "keywords": "hepatitis a\\b",
+    "incubation": "14-28 days", "seasonality": "Year-round; outbreaks linked to food and water",
+    "description": "A vaccine-preventable liver infection spread by contaminated food, water or close contact.",
+    "symptoms": ["fatigue", "nausea", "vomiting", "stomach pain", "fever", "jaundice"],
+    "transmission": ["contaminated food", "contaminated water", "close contact"],
+    "prevention": ["Get the hepatitis A vaccine", "Wash hands after using the toilet and before eating", "Avoid untreated water"]
+  },
+  {
+    "slug": "norovirus", "name": "Norovirus", "category": "viral", "emoji": "🤢", "severity": "moderate", "vaccine": false,
+    "wiki": "Norovirus", "gdelt": "norovirus", "keywords": "norovirus",
+    "incubation": "12-48 hours", "seasonality": "Mostly winter",
+    "description": "A very contagious stomach virus and the leading cause of vomiting and diarrhoea outbreaks in closed settings such as ships, schools and care homes.",
+    "symptoms": ["vomiting", "diarrhea", "nausea", "stomach pain", "fever", "headache", "muscle aches"],
+    "transmission": ["contaminated food", "contaminated water", "contaminated surfaces", "close contact"],
+    "prevention": ["Wash hands with soap, since alcohol gel works poorly on norovirus", "Clean surfaces with a bleach-based product", "Do not prepare food for others until 2 days after symptoms stop"]
+  },
+  {
+    "slug": "measles", "name": "Measles", "category": "viral", "emoji": "🔴", "severity": "severe", "vaccine": true,
+    "wiki": "Measles", "gdelt": "measles", "keywords": "measles",
+    "incubation": "10-14 days", "seasonality": "Late winter and spring; outbreaks follow vaccination gaps",
+    "description": "One of the most contagious viruses known. It can cause pneumonia and brain swelling, and two doses of vaccine give strong protection.",
+    "symptoms": ["fever", "cough", "runny nose", "itchy eyes", "rash"],
+    "transmission": ["airborne", "respiratory droplets"],
+    "prevention": ["Check that you and your children have two MMR doses", "Call ahead before visiting a clinic if you suspect measles", "Isolate until 4 days after the rash starts"]
+  },
+  {
+    "slug": "mpox", "name": "Mpox", "category": "viral", "emoji": "🔬", "severity": "moderate", "vaccine": true,
+    "wiki": "Mpox", "gdelt": "(mpox OR monkeypox)", "keywords": "mpox|monkeypox",
+    "incubation": "3-17 days", "seasonality": "Year-round",
+    "description": "A viral illness that causes a painful rash and swollen lymph nodes, spread mainly through close physical contact.",
+    "symptoms": ["rash", "fever", "chills", "swollen lymph nodes", "headache", "muscle aches", "fatigue"],
+    "transmission": ["close physical contact", "contaminated materials", "animals"],
+    "prevention": ["Avoid skin-to-skin contact with anyone who has a rash", "Ask about vaccination if you are at higher risk", "Isolate and cover sores until they have fully healed"]
+  },
+  {
+    "slug": "h5n1", "name": "Avian influenza (bird flu)", "category": "viral", "emoji": "🐔", "severity": "critical", "vaccine": false,
+    "wiki": "Influenza_A_virus_subtype_H5N1", "gdelt": "(\"bird flu\" OR \"avian influenza\" OR H5N1)", "keywords": "bird flu|avian influenza|avian flu|h5n1|h5n5",
+    "incubation": "2-8 days", "seasonality": "Follows bird migration",
+    "description": "Influenza viruses that spread mainly among birds and sometimes dairy cattle. Human cases are rare and mostly follow animal contact, but can be severe.",
+    "symptoms": ["fever", "cough", "sore throat", "muscle aches", "shortness of breath", "itchy eyes"],
+    "transmission": ["contact with infected birds or animals", "raw milk"],
+    "prevention": ["Avoid sick or dead birds and animals", "Do not drink raw milk", "Wear protective gear if you work with poultry or cattle"]
+  },
+  {
+    "slug": "ebola", "name": "Ebola", "category": "viral", "emoji": "☣️", "severity": "critical", "vaccine": true,
+    "wiki": "Ebola", "gdelt": "ebola", "keywords": "ebola",
+    "incubation": "2-21 days", "seasonality": "Sporadic outbreaks",
+    "description": "A rare, severe viral haemorrhagic fever spread through contact with the body fluids of infected people or animals.",
+    "symptoms": ["fever", "fatigue", "muscle aches", "headache", "sore throat", "vomiting", "diarrhea", "rash"],
+    "transmission": ["contact with body fluids", "contact with infected animals"],
+    "prevention": ["Avoid contact with body fluids of sick people in affected areas", "Follow safe burial guidance", "Seek care immediately and report recent travel if symptoms appear"]
+  },
+  {
+    "slug": "marburg", "name": "Marburg virus disease", "category": "viral", "emoji": "🦇", "severity": "critical", "vaccine": false,
+    "wiki": "Marburg_virus_disease", "gdelt": "marburg", "keywords": "marburg",
+    "incubation": "2-21 days", "seasonality": "Sporadic outbreaks",
+    "description": "A rare and often fatal viral haemorrhagic fever related to Ebola, linked to fruit bats and spread by body fluids.",
+    "symptoms": ["fever", "headache", "muscle aches", "vomiting", "diarrhea", "stomach pain", "rash"],
+    "transmission": ["contact with body fluids", "fruit bats"],
+    "prevention": ["Avoid caves and mines with fruit bats in affected areas", "Avoid contact with body fluids of sick people", "Seek care immediately and report recent travel"]
+  },
+  {
+    "slug": "nipah", "name": "Nipah virus", "category": "viral", "emoji": "🦇", "severity": "critical", "vaccine": false,
+    "wiki": "Nipah_virus_infection", "gdelt": "nipah", "keywords": "nipah",
+    "incubation": "4-14 days", "seasonality": "Often December to May in South Asia",
+    "description": "A rare but very dangerous virus from fruit bats and pigs that can cause brain inflammation, with recurring outbreaks in South Asia.",
+    "symptoms": ["fever", "headache", "cough", "sore throat", "shortness of breath", "vomiting", "dizziness"],
+    "transmission": ["fruit bats", "contaminated date palm sap or fruit", "close contact with patients"],
+    "prevention": ["Do not drink raw date palm sap", "Wash and peel fruit, and discard fruit with bite marks", "Avoid close contact with patients in affected areas"]
+  },
+  {
+    "slug": "lassa", "name": "Lassa fever", "category": "viral", "emoji": "🐀", "severity": "severe", "vaccine": false,
+    "wiki": "Lassa_fever", "gdelt": "\"lassa fever\"", "keywords": "lassa",
+    "incubation": "6-21 days", "seasonality": "Dry season in West Africa",
+    "description": "A viral haemorrhagic illness in West Africa spread by rodents, with Nigeria reporting cases every year.",
+    "symptoms": ["fever", "fatigue", "headache", "sore throat", "muscle aches", "chest pain", "vomiting", "diarrhea"],
+    "transmission": ["rodent urine and droppings", "contact with body fluids"],
+    "prevention": ["Store food in rodent-proof containers", "Keep homes clean and free of rodents", "Seek early care, since early treatment improves survival"]
+  },
+  {
+    "slug": "yellow-fever", "name": "Yellow fever", "category": "viral", "emoji": "🟨", "severity": "severe", "vaccine": true,
+    "wiki": "Yellow_fever", "gdelt": "\"yellow fever\"", "keywords": "yellow fever",
+    "incubation": "3-6 days", "seasonality": "Rainy seasons in Africa and South America",
+    "description": "A mosquito-borne viral disease that can cause jaundice and bleeding. One vaccine dose gives long-lasting protection.",
+    "symptoms": ["fever", "headache", "muscle aches", "nausea", "vomiting", "jaundice", "fatigue"],
+    "transmission": ["Aedes and Haemagogus mosquito bites"],
+    "prevention": ["Get vaccinated before visiting risk areas", "Use repellent and protective clothing"]
+  },
+  {
+    "slug": "polio", "name": "Polio", "category": "viral", "emoji": "🦽", "severity": "severe", "vaccine": true,
+    "wiki": "Polio", "gdelt": "(polio OR poliovirus)", "keywords": "polio",
+    "incubation": "7-14 days", "seasonality": "Warmer months",
+    "description": "A vaccine-preventable virus that can cause permanent paralysis. It remains targeted for global eradication.",
+    "symptoms": ["fever", "fatigue", "headache", "vomiting", "muscle aches", "limb weakness"],
+    "transmission": ["contaminated water", "contaminated food", "close contact"],
+    "prevention": ["Complete the polio vaccination schedule", "Check booster advice before travel", "Practise good sanitation and hand hygiene"]
+  },
+  {
+    "slug": "pertussis", "name": "Whooping cough (pertussis)", "category": "bacterial", "emoji": "😮‍💨", "severity": "moderate", "vaccine": true,
+    "wiki": "Whooping_cough", "gdelt": "(\"whooping cough\" OR pertussis)", "keywords": "whooping cough|pertussis",
+    "incubation": "7-10 days", "seasonality": "Cycles every 3-5 years",
+    "description": "A very contagious bacterial infection causing violent coughing fits. It is most dangerous for babies.",
+    "symptoms": ["cough", "runny nose", "sneezing", "fever", "vomiting", "shortness of breath"],
+    "transmission": ["respiratory droplets"],
+    "prevention": ["Get vaccinated during each pregnancy to protect newborns", "Keep childhood vaccines and adult boosters up to date", "Keep coughing people away from young babies"]
+  },
+  {
+    "slug": "mycoplasma", "name": "Mycoplasma pneumonia", "category": "bacterial", "emoji": "🫁", "severity": "moderate", "vaccine": false,
+    "wiki": "Mycoplasma_pneumoniae", "gdelt": "(\"mycoplasma pneumonia\" OR \"walking pneumonia\" OR \"mycoplasma pneumoniae\")", "keywords": "mycoplasma|walking pneumonia",
+    "incubation": "1-4 weeks", "seasonality": "Waves every few years",
+    "description": "A bacterial lung infection, often called walking pneumonia, that is common in school-age children and young adults.",
+    "symptoms": ["cough", "fever", "sore throat", "fatigue", "headache", "chest pain"],
+    "transmission": ["respiratory droplets"],
+    "prevention": ["Cover coughs and wash hands", "Stay home while coughing heavily", "See a doctor for a persistent cough with fever"]
+  },
+  {
+    "slug": "hmpv", "name": "Human metapneumovirus (hMPV)", "category": "viral", "emoji": "🌬️", "severity": "moderate", "vaccine": false,
+    "wiki": "Human_metapneumovirus", "gdelt": "(hMPV OR metapneumovirus)", "keywords": "hmpv|metapneumovirus",
+    "incubation": "3-6 days", "seasonality": "Late winter and spring",
+    "description": "A common respiratory virus similar to RSV. It can be more serious in babies, older adults and people with weakened immune systems.",
+    "symptoms": ["cough", "fever", "congestion", "runny nose", "sore throat", "wheezing", "shortness of breath"],
+    "transmission": ["respiratory droplets", "contaminated surfaces", "close contact"],
+    "prevention": ["Wash hands often", "Avoid close contact when sick", "Clean shared surfaces"]
+  },
+  {
+    "slug": "strep-a", "name": "Group A strep", "category": "bacterial", "emoji": "🫀", "severity": "moderate", "vaccine": false,
+    "wiki": "Group_A_streptococcal_infection", "gdelt": "(\"strep A\" OR \"group A strep\" OR \"scarlet fever\" OR \"strep throat\")", "keywords": "strep a\\b|group a strep|scarlet fever|strep throat",
+    "incubation": "2-5 days", "seasonality": "Winter and early spring",
+    "description": "Bacteria that cause strep throat and scarlet fever, and rarely severe invasive infections. Antibiotics treat it effectively.",
+    "symptoms": ["sore throat", "fever", "swollen lymph nodes", "headache", "rash"],
+    "transmission": ["respiratory droplets", "direct contact with sores"],
+    "prevention": ["Wash hands and do not share cups", "Finish prescribed antibiotics", "Seek urgent care for fast-worsening pain, swelling or breathing trouble"]
+  },
+  {
+    "slug": "meningitis", "name": "Meningococcal meningitis", "category": "bacterial", "emoji": "🧠", "severity": "critical", "vaccine": true,
+    "wiki": "Meningitis", "gdelt": "meningitis", "keywords": "meningitis|meningococcal",
+    "incubation": "2-10 days", "seasonality": "Dry season in the African meningitis belt",
+    "description": "An infection of the membranes around the brain and spinal cord. Bacterial meningitis is a medical emergency.",
+    "symptoms": ["fever", "headache", "neck stiffness", "vomiting", "rash", "dizziness"],
+    "transmission": ["respiratory droplets", "close contact"],
+    "prevention": ["Keep meningococcal vaccines up to date", "Get emergency care for fever with a stiff neck or a rash that does not fade when pressed"]
+  },
+  {
+    "slug": "legionnaires", "name": "Legionnaires' disease", "category": "bacterial", "emoji": "🏨", "severity": "severe", "vaccine": false,
+    "wiki": "Legionnaires'_disease", "gdelt": "(legionnaires OR legionella)", "keywords": "legionnaires|legionella",
+    "incubation": "2-14 days", "seasonality": "Summer and early autumn",
+    "description": "A severe pneumonia caught by breathing water droplets from contaminated systems such as cooling towers, hot tubs and building plumbing.",
+    "symptoms": ["cough", "fever", "shortness of breath", "muscle aches", "headache", "diarrhea"],
+    "transmission": ["inhaled contaminated water mist"],
+    "prevention": ["Keep hot tubs and building water systems maintained", "See a doctor quickly if pneumonia symptoms follow a hotel, spa or hospital stay"]
+  },
+  {
+    "slug": "lyme", "name": "Lyme disease", "category": "bacterial", "emoji": "🕷️", "severity": "moderate", "vaccine": false,
+    "wiki": "Lyme_disease", "gdelt": "\"lyme disease\"", "keywords": "\\blyme\\b",
+    "incubation": "3-30 days", "seasonality": "Spring to autumn",
+    "description": "A bacterial infection from black-legged tick bites. Early antibiotics usually lead to full recovery.",
+    "symptoms": ["rash", "fever", "chills", "headache", "fatigue", "muscle aches", "joint pain"],
+    "transmission": ["tick bites"],
+    "prevention": ["Use repellent and stay on clear paths in tick areas", "Check your body for ticks after being outdoors", "Remove ticks promptly with fine tweezers"]
+  }
+]
