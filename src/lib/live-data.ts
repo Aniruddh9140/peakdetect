@@ -53,7 +53,6 @@ export type LiveData = {
     emerging: { name: string; summary: string; where: string[]; sources: string[] }[];
     generatedAt: string;
     model: string;
-    searches: number;
   } | null;
   sources: { name: string; url: string; kind: string; ok: boolean; items: number; error?: string; checkedAt: string }[];
 };

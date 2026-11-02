@@ -61,7 +61,6 @@ jobs:
       - name: Collect live data
         if: github.event_name != 'push'
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           OLLAMA_URL: http://127.0.0.1:11434
         run: npm run update-data
 

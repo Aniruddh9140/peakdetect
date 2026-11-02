@@ -152,7 +152,7 @@ export default function DashboardOverview() {
                 <Card>
                   <CardHeader>
                     <CardTitle>Also on the AI&apos;s radar</CardTitle>
-                    <CardDescription>Found by web search, outside the tracked list</CardDescription>
+                    <CardDescription>Named in official reports, outside the tracked list</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {data.ai?.emerging.map((e) => (

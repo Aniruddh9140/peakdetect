@@ -1,14 +1,14 @@
 // Runs on a schedule in GitHub Actions: collects live signals, scores each disease,
-// asks Claude for a cited briefing and writes public/data/latest.json for the site.
+// asks a free open AI model for a cited briefing and writes public/data/latest.json for the site.
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { completeDays, dampNews, factors, heat, regionsIn, score, trendTable, weekly } from "./analyze.mjs";
-import { MODEL, writeBriefing, writeLocalBriefing } from "./briefing.mjs";
+import { MODEL, writeBriefing } from "./briefing.mjs";
 
 const OUTPUT = "public/data/latest.json";
 const USER_AGENT = "ViraWatch/1.0 (open-source disease dashboard)";
 const DAY = 86_400_000;
 
-const AI_EVERY_MS = 20 * 3_600_000; // once a day keeps the Claude bill small; stats still refresh every run
+const AI_EVERY_MS = 20 * 3_600_000; // once a day: the model takes minutes on a CPU; stats still refresh every run
 const GDELT_BUDGET_MS = Number(process.env.GDELT_BUDGET_MS ?? 15 * 60_000);
 const GDELT_GAP_MS = 6_000;
 const NEWS_MAX_AGE = 3 * DAY;
@@ -315,19 +315,17 @@ async function main() {
   let ai = fresh(previous?.ai) ? previous.ai : null;
   // Counting attempts, not successes, stops a failing briefing from being paid for every 6 hours.
   let aiAttemptedAt = previous?.aiAttemptedAt ?? previous?.ai?.generatedAt ?? null;
-  // Claude with web search if a key is set, otherwise the free open model the workflow starts.
-  const claude = Boolean(process.env.ANTHROPIC_API_KEY);
+  // The workflow starts the model and sets OLLAMA_URL; a local run without it skips the briefing.
   const ollama = process.env.OLLAMA_URL;
-  const [aiName, aiUrl] = claude ? ["Claude web research", "https://www.anthropic.com/"] : ["Built-in AI (Qwen3 4B, open model)", "https://ollama.com/library/qwen3"];
-  if ((claude || ollama) && Date.now() - Date.parse(aiAttemptedAt ?? "1970-01-01") > AI_EVERY_MS) {
+  const [aiName, aiUrl] = ["Built-in AI (Qwen3 4B, open model)", "https://ollama.com/library/qwen3"];
+  if (ollama && Date.now() - Date.parse(aiAttemptedAt ?? "1970-01-01") > AI_EVERY_MS) {
     aiAttemptedAt = new Date().toISOString();
     // Only official and expert sources go in: open-web headlines are an injection risk.
     const recent = [...whoReports, ...feeds].filter((h) => (h.date ?? "") >= isoDay(Date.now() - 14 * DAY)).slice(0, 90);
-    // The small model gets a shorter list so the prompt fits its context window.
-    const write = claude ? () => writeBriefing(rows, recent) : () => writeLocalBriefing(rows.slice(0, 12), recent.slice(0, 40), ollama);
-    ai = (await track(aiName, aiUrl, "AI analysis", write)) ?? ai;
+    // A small model gets a short list so the prompt fits its context window.
+    ai = (await track(aiName, aiUrl, "AI analysis", () => writeBriefing(rows.slice(0, 12), recent.slice(0, 40), ollama))) ?? ai;
   } else {
-    const error = claude || ollama ? "No current briefing; the next attempt is within a day" : "Runs in GitHub Actions, not on this machine";
+    const error = ollama ? "No current briefing; the next attempt is within a day" : "Runs in GitHub Actions, not on this machine";
     sources.push({ name: aiName, url: aiUrl, kind: "AI analysis", ok: Boolean(ai), items: ai ? 1 : 0, checkedAt: ai?.generatedAt ?? new Date().toISOString(), ...(ai ? {} : { error }) });
   }
 

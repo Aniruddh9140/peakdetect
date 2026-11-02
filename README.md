@@ -15,12 +15,9 @@ The site appears at `https://<your-username>.github.io/<repo-name>/`. After that
 
 Once a day the workflow starts a free, open AI model ([Qwen3 4B](https://ollama.com/library/qwen3), Apache 2.0) on GitHub's own machine using [Ollama](https://ollama.com). It reads the measured signals and the latest WHO, ECDC, UKHSA and CDC reports, then writes a short briefing. Every claim must cite one of those reports; anything citing a link it was not given is dropped before publishing. This costs nothing and needs no key.
 
-The free model is small and runs without a GPU, so it cannot search the web and writes less well than a large model. For a stronger briefing that also searches the web, add a paid Claude key:
+The model is small and runs without a GPU, so it cannot search the web on its own and writes more simply than a large model. It runs once a day; to change that, edit `AI_EVERY_MS` in `scripts/update-data.mjs`.
 
-1. Create a key at [platform.claude.com](https://platform.claude.com/) and set a monthly spend limit there.
-2. In the repository, open **Settings > Secrets and variables > Actions** and add a secret named `ANTHROPIC_API_KEY`.
-
-With a key set, Claude replaces the free model. To change how often the AI runs, edit `AI_EVERY_MS` in `scripts/update-data.mjs`.
+Everything here is free: GitHub Pages and Actions cost nothing for a public repository, and every data source is free.
 
 ## How it works
 

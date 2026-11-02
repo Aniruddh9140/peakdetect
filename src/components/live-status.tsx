@@ -57,7 +57,7 @@ export function AiLabel({ data }: { data: LiveData }) {
   return data.ai ? (
     <span className="inline-flex items-center gap-1 text-xs text-slate-500">
       <Sparkles className="w-3 h-3 text-blue-600" />
-      AI briefing {relativeTime(data.ai.generatedAt)}, {data.ai.searches ? `${data.ai.searches} web searches` : `written by ${data.ai.model}`}
+      AI briefing {relativeTime(data.ai.generatedAt)}, written by {data.ai.model}
     </span>
   ) : (
     <span className="text-xs text-slate-500">Measured data only. AI briefing is off.</span>
