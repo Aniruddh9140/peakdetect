@@ -42,7 +42,7 @@ test("phaseOf separates peak, rise, fall and normal", () => {
 
 test("score reweights around a missing signal", () => {
   const signal = { heat: 80, growth: 0.1 };
-  assert.equal(score({ wiki: signal }).score, 80);
+  assert.equal(score({ surveillance: signal }).score, 80);
   assert.equal(score({ wiki: signal, news: signal, surveillance: signal }).score, 80);
   assert.equal(score({}), null);
 });
@@ -59,6 +59,13 @@ test("completeDays drops outage days, which is what the live GDELT data contains
   const days = [{ norm: 146057 }, { norm: 156425 }, { norm: 123805 }, { norm: 4483 }, { norm: 2218 }];
   assert.deepEqual(completeDays(days).map((d) => d.norm), [146057, 156425, 123805]);
   assert.deepEqual(completeDays([]), []);
+});
+
+test("attention alone is ranked below the peaking threshold", () => {
+  const viral = { heat: 100, growth: 0.3 };
+  assert.equal(score({ wiki: viral }).score, 69);
+  assert.equal(score({ wiki: viral, news: viral }).score, 69);
+  assert.equal(score({ wiki: viral }, 1).score, 100);
 });
 
 test("official reports raise the score, capped at 10 points", () => {

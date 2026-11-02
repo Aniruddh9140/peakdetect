@@ -53,7 +53,9 @@ export function score({ surveillance, news, wiki }, officialReports = 0) {
   const blend = (field) => parts.reduce((a, [k, s]) => a + WEIGHTS[k] * s[field], 0) / total;
   const value = clamp(blend("heat") + Math.min(officialReports * 5, 10));
   const growth = blend("growth");
-  return { score: Math.round(value), growth: round(growth, 3), phase: phaseOf(confirmed ? value : Math.min(value, PEAK_SCORE - 1), growth) };
+  // The cap keeps an attention spike ranked below a confirmed outbreak.
+  const capped = confirmed ? value : Math.min(value, PEAK_SCORE - 1);
+  return { score: Math.round(capped), growth: round(growth, 3), phase: phaseOf(capped, growth) };
 }
 
 const multiple = (growth) => `${(1 + growth).toFixed(1)}x`;
