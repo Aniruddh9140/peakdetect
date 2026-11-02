@@ -96,6 +96,8 @@ const feed = (name, url) =>
     const cutoff = isoDay(Date.now() - ALERT_WINDOW);
     const items = parseFeed(await get(url, "text"), name)
       .filter((i) => i.date >= cutoff)
+      // UKHSA lists upcoming releases too; an announcement of a future report is not evidence.
+      .filter((i) => !i.url.includes("/statistics/announcements/"))
       .sort((a, b) => b.date.localeCompare(a.date))
       .slice(0, 40);
     if (!items.length) throw new Error(`no items in the last ${ALERT_WINDOW / DAY} days`);
