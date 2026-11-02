@@ -1,5 +1,6 @@
 // The AI layer: a free open model, served by Ollama inside GitHub Actions, reads the measured
 // signals and official reports and writes a cited briefing.
+import http from "node:http";
 
 export const MODEL = "qwen3:4b";
 const PHASES = ["peaking", "rising", "baseline", "falling"];
@@ -89,6 +90,22 @@ export function validate(raw, slugs, seenUrls) {
   return { headline, overview, assessments, emerging };
 }
 
+// Node's fetch gives up when response headers take over 5 minutes, and a CPU model can
+// think longer than that before replying, so this uses plain http with its own limit.
+function post(url, body) {
+  return new Promise((resolve, reject) => {
+    const req = http.request(url, { method: "POST", headers: { "Content-Type": "application/json" }, timeout: TIMEOUT_MS }, (res) => {
+      let data = "";
+      res.setEncoding("utf8");
+      res.on("data", (chunk) => (data += chunk));
+      res.on("end", () => (res.statusCode === 200 ? resolve(data) : reject(new Error(`Ollama HTTP ${res.statusCode}: ${data.slice(0, 200)}`))));
+    });
+    req.on("timeout", () => req.destroy(new Error(`Ollama gave no answer in ${TIMEOUT_MS / 60_000} minutes`)));
+    req.on("error", reject);
+    req.end(JSON.stringify(body));
+  });
+}
+
 // The JSON schema makes Ollama constrain the output, which a small model needs to return the shape reliably.
 export async function writeBriefing(rows, headlines, url) {
   const slugs = rows.map((d) => d.slug);
@@ -114,11 +131,8 @@ export async function writeBriefing(rows, headlines, url) {
     required: ["headline", "overview", "assessments", "emerging"],
   };
 
-  const res = await fetch(`${url}/api/chat`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-    body: JSON.stringify({
+  const { message } = JSON.parse(
+    await post(`${url}/api/chat`, {
       model: MODEL,
       stream: false,
       think: false,
@@ -128,10 +142,8 @@ export async function writeBriefing(rows, headlines, url) {
         { role: "system", content: SYSTEM },
         { role: "user", content: buildPrompt(rows, headlines) },
       ],
-    }),
-  });
-  if (!res.ok) throw new Error(`Ollama HTTP ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  const { message } = await res.json();
+    })
+  );
   return {
     ...validate(parseJson(message.content), new Set(slugs), new Set(headlines.map((h) => h.url))),
     generatedAt: new Date().toISOString(),

@@ -78,3 +78,33 @@ test("writeBriefing asks Ollama for schema-shaped JSON and drops invented citati
     server.close();
   }
 });
+
+test("writeBriefing waits longer than fetch's 5-minute header limit would allow", async () => {
+  const server = http.createServer((req, res) => {
+    req.resume();
+    // A slow first byte would kill fetch() at 300s; here the reply arrives after a short pause.
+    setTimeout(() => res.end(JSON.stringify({ message: { content: JSON.stringify(reply()) } })), 200);
+  });
+  await new Promise((r) => server.listen(0, "127.0.0.1", r));
+  try {
+    const rows = [{ slug: "influenza", name: "Flu", score: 80, phase: "rising", factors: [] }];
+    const out = await writeBriefing(rows, [{ title: "t", url: SEEN, source: "WHO", date: "2026-11-01" }], `http://127.0.0.1:${server.address().port}`);
+    assert.equal(out.headline, "Flu is climbing.");
+  } finally {
+    server.close();
+  }
+});
+
+test("writeBriefing reports an Ollama error status", async () => {
+  const server = http.createServer((req, res) => {
+    req.resume();
+    res.writeHead(404).end('{"error":"model not found"}');
+  });
+  await new Promise((r) => server.listen(0, "127.0.0.1", r));
+  try {
+    const rows = [{ slug: "influenza", name: "Flu", score: 80, phase: "rising", factors: [] }];
+    await assert.rejects(writeBriefing(rows, [], `http://127.0.0.1:${server.address().port}`), /Ollama HTTP 404: .*model not found/);
+  } finally {
+    server.close();
+  }
+});

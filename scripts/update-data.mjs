@@ -51,7 +51,7 @@ async function track(name, url, kind, fn) {
     entry.items = result.length ?? result.size ?? 1;
     return result;
   } catch (e) {
-    entry.error = String(e.message ?? e).slice(0, 200);
+    entry.error = String([e.message ?? e, e.cause?.code ?? e.cause?.message].filter(Boolean).join(": ")).slice(0, 200);
     console.warn(`::warning::${name}: ${entry.error}`);
     return null;
   }
