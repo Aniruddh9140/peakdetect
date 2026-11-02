@@ -43,7 +43,7 @@ export default function LandingPage() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-300 text-xs font-medium mb-6">
               <span className="w-2 h-2 rounded-full bg-blue-400 pulse-dot" />
-              Updates every 6 hours from public health data
+              Updates every hour from public health data
             </div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05] mb-6">
               What&apos;s going around

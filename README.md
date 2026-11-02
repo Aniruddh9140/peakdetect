@@ -9,7 +9,7 @@ A live tracker of which diseases are at their peak right now. It runs entirely o
 3. Open **Settings > Actions > General** and make sure workflows have **Read and write permissions**.
 4. Open the **Actions** tab, choose **Update data and deploy**, and press **Run workflow**.
 
-The site appears at `https://<your-username>.github.io/<repo-name>/`. After that it updates itself every 6 hours.
+The site appears at `https://<your-username>.github.io/<repo-name>/`. After that it updates itself every hour.
 
 ## The AI briefing
 
@@ -21,7 +21,7 @@ Everything here is free: GitHub Pages and Actions cost nothing for a public repo
 
 ## How it works
 
-`scripts/update-data.mjs` runs every 6 hours in GitHub Actions and writes `public/data/latest.json`, which the site reads.
+`scripts/update-data.mjs` runs every hour in GitHub Actions and writes `public/data/latest.json`, which the site reads.
 
 | Signal | Source | Weight |
 |---|---|---|

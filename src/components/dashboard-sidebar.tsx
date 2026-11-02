@@ -168,7 +168,7 @@ export function DashboardSidebar() {
             </div>
             <p className="text-[11px] text-blue-700/80 leading-snug">
               {data
-                ? `Tracking ${diseases.length} diseases. Updated ${relativeTime(data.generatedAt)}, refreshed every ${data.updateEveryHours} hours.`
+                ? `Tracking ${diseases.length} diseases. Updated ${relativeTime(data.generatedAt)}, refreshed every ${data.updateEveryHours === 1 ? "hour" : `${data.updateEveryHours} hours`}.`
                 : "Reading the latest update."}
             </p>
           </div>

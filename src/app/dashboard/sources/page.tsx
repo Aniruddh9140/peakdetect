@@ -81,7 +81,7 @@ export default function SourcesPage() {
                 How the peak score works
               </h3>
               <p className="text-sm text-slate-700 leading-relaxed">
-                Every {data.updateEveryHours} hours, each signal is compared with that disease&apos;s own history. Case data counts for 50%, news coverage 30% and Wikipedia readership 20%. If a signal is missing, the others share its weight. Official WHO outbreak reports add up to 10 points. Rare diseases need at least 5 articles a day for news to count fully, so a few stories cannot create a false peak. Case data currently covers flu, RSV and COVID-19 only, so scores for other diseases show attention more than confirmed cases.
+                On every update, each signal is compared with that disease&apos;s own history. Case data counts for 50%, news coverage 30% and Wikipedia readership 20%. If a signal is missing, the others share its weight. Official WHO outbreak reports add up to 10 points. Rare diseases need at least 5 articles a day for news to count fully, so a few stories cannot create a false peak. Case data currently covers flu, RSV and COVID-19 only, so scores for other diseases show attention more than confirmed cases.
               </p>
             </CardContent>
           </Card>

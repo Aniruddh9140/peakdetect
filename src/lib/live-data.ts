@@ -93,7 +93,8 @@ export function useLiveData() {
   return { data, diseases, error, loading: !data && !error };
 }
 
-export const isStale = (data: LiveData) => Date.now() - Date.parse(data.generatedAt) > data.updateEveryHours * 4 * 3_600_000;
+// A day, not a few missed runs: GitHub often delays or drops scheduled runs, and most sources change daily or weekly.
+export const isStale = (data: LiveData) => Date.now() - Date.parse(data.generatedAt) > 24 * 3_600_000;
 
 // The AI disease summary to lead with: a peaking one first, otherwise the highest-scoring one it assessed.
 export const topAssessed = (diseases: Disease[]) => diseases.find((d) => d.ai?.phase === "peaking") ?? diseases.find((d) => d.ai);

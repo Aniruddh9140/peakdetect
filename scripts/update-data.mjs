@@ -326,7 +326,7 @@ async function main() {
 
   const fresh = (briefing) => briefing && Date.now() - Date.parse(briefing.generatedAt) < AI_MAX_AGE;
   let ai = fresh(previous?.ai) ? previous.ai : null;
-  // Counting attempts, not successes, stops a failing briefing from being paid for every 6 hours.
+  // Counting attempts, not successes, stops a failing briefing from being retried on every run.
   let aiAttemptedAt = previous?.aiAttemptedAt ?? previous?.ai?.generatedAt ?? null;
   // The workflow starts the model and sets OLLAMA_URL; a local run without it skips the briefing.
   const ollama = process.env.OLLAMA_URL;
@@ -353,7 +353,7 @@ async function main() {
   await mkdir("public/data", { recursive: true });
   await writeFile(OUTPUT, JSON.stringify({
     generatedAt: new Date().toISOString(),
-    updateEveryHours: 6,
+    updateEveryHours: 1,
     aiModel: MODEL,
     aiAttemptedAt,
     diseases: rows,
