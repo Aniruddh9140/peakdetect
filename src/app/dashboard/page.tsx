@@ -63,7 +63,7 @@ export default function DashboardOverview() {
                   {data.ai ? data.ai.headline : `${peakingCount} ${peakingCount === 1 ? "disease is" : "diseases are"} scoring as peaking`}
                 </h2>
                 <p className="text-sm text-slate-300 mt-1 max-w-3xl leading-relaxed">
-                  {data.ai && `${data.ai.overview} `}
+                  {data.ai && `${data.ai.overview} This summary is written by a small AI model and can make mistakes; check the linked reports. `}
                   Scores compare each disease with its own past year. They do not count how many people are sick or say how likely you are to catch anything.
                 </p>
               </div>

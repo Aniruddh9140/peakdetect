@@ -1,9 +1,13 @@
 // The AI layer: a free open model, served by Ollama inside GitHub Actions, reads the measured
 // signals and official reports and writes a cited briefing.
 import http from "node:http";
+import { readFileSync } from "node:fs";
 
 export const MODEL = "qwen3:4b";
 const PHASES = ["peaking", "rising", "baseline", "falling"];
+const KEYWORDS = new Map(
+  JSON.parse(readFileSync(new URL("../src/data/diseases.json", import.meta.url), "utf8")).map((d) => [d.slug, new RegExp(d.keywords, "i")])
+);
 const TIMEOUT_MS = 15 * 60_000;
 
 const SYSTEM = `You are the analyst for a public disease-activity dashboard. Your job is to say which diseases are at their peak right now and why.
@@ -64,16 +68,20 @@ export function parseJson(reply) {
   return JSON.parse(reply.slice(start, end + 1));
 }
 
-// The model's reply is untrusted too: only known slugs and URLs it was given reach the site.
-export function validate(raw, slugs, seenUrls) {
-  const cited = (list) => (Array.isArray(list) ? [...new Set(list)] : []).filter((u) => seenUrls.has(u) && /^https?:\/\//.test(u) && URL.canParse(u)).slice(0, 5);
+// The model's reply is untrusted too: only known slugs and URLs it was given reach the site,
+// and a disease may only cite a report whose title names it (small models attach any link).
+export function validate(raw, slugs, sources) {
+  const cited = (list, slug) =>
+    (Array.isArray(list) ? [...new Set(list)] : [])
+      .filter((u) => sources.has(u) && /^https?:\/\//.test(u) && URL.canParse(u) && (!slug || KEYWORDS.get(slug)?.test(sources.get(u))))
+      .slice(0, 5);
   const assessments = (Array.isArray(raw.assessments) ? raw.assessments : [])
     .map((a) => ({
       slug: a?.slug,
       phase: a?.phase,
       summary: text(a?.summary, 500),
       where: strings(a?.where, 60, 6),
-      sources: cited(a?.sources),
+      sources: cited(a?.sources, a?.slug),
     }))
     .filter((a) => slugs.has(a.slug) && PHASES.includes(a.phase) && a.summary && a.sources.length);
   const emerging = (Array.isArray(raw.emerging) ? raw.emerging : [])
@@ -145,7 +153,7 @@ export async function writeBriefing(rows, headlines, url) {
     })
   );
   return {
-    ...validate(parseJson(message.content), new Set(slugs), new Set(headlines.map((h) => h.url))),
+    ...validate(parseJson(message.content), new Set(slugs), new Map(headlines.map((h) => [h.url, h.title]))),
     generatedAt: new Date().toISOString(),
     model: MODEL,
   };

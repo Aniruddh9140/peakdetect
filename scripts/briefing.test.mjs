@@ -12,7 +12,8 @@ const reply = (over = {}) => ({
   ...over,
 });
 const slugs = new Set(["influenza"]);
-const seen = new Set([SEEN]);
+const FLU_TITLE = "Influenza activity rises in Europe";
+const seen = new Map([[SEEN, FLU_TITLE]]);
 
 test("parseJson tolerates text around the object", () => {
   assert.deepEqual(parseJson('Here you go:\n{"a":1}\nDone.'), { a: 1 });
@@ -37,9 +38,19 @@ test("validate drops unknown slugs and phases, and non-web URLs", () => {
   const javascriptUrl = "javascript:alert(1)";
   const broken = "https://exa mple.com/";
   const emerging = [{ name: "X", summary: "y", sources: [javascriptUrl, broken] }];
-  const out = validate(reply({ assessments, emerging }), slugs, new Set([SEEN, javascriptUrl, broken]));
+  const out = validate(reply({ assessments, emerging }), slugs, new Map([[SEEN, FLU_TITLE], [javascriptUrl, "x"], [broken, "x"]]));
   assert.equal(out.assessments.length, 1);
   assert.equal(out.emerging.length, 0);
+});
+
+test("validate drops a citation whose report is about a different disease", () => {
+  const ebola = "https://www.who.int/ebola";
+  const assessments = [
+    { slug: "cholera", phase: "rising", summary: "Cites an Ebola report.", sources: [ebola] },
+    reply().assessments[0],
+  ];
+  const out = validate(reply({ assessments }), new Set(["influenza", "cholera"]), new Map([[SEEN, FLU_TITLE], [ebola, "Ebola disease - Democratic Republic of the Congo"]]));
+  assert.deepEqual(out.assessments.map((a) => a.slug), ["influenza"]);
 });
 
 test("validate survives garbage shapes", () => {
@@ -67,7 +78,7 @@ test("writeBriefing asks Ollama for schema-shaped JSON and drops invented citati
   await new Promise((r) => server.listen(0, "127.0.0.1", r));
   try {
     const rows = [{ slug: "influenza", name: "Flu", score: 80, phase: "rising", factors: [] }];
-    const out = await writeBriefing(rows, [{ title: "t", url: SEEN, source: "WHO", date: "2026-11-01", summary: "WHO says flu is up." }], `http://127.0.0.1:${server.address().port}`);
+    const out = await writeBriefing(rows, [{ title: FLU_TITLE, url: SEEN, source: "WHO", date: "2026-11-01", summary: "WHO says flu is up." }], `http://127.0.0.1:${server.address().port}`);
     assert.equal(request.url, "/api/chat");
     assert.equal(request.body.think, false);
     assert.deepEqual(request.body.format.properties.assessments.items.properties.slug.enum, ["influenza"]);
@@ -88,7 +99,7 @@ test("writeBriefing waits longer than fetch's 5-minute header limit would allow"
   await new Promise((r) => server.listen(0, "127.0.0.1", r));
   try {
     const rows = [{ slug: "influenza", name: "Flu", score: 80, phase: "rising", factors: [] }];
-    const out = await writeBriefing(rows, [{ title: "t", url: SEEN, source: "WHO", date: "2026-11-01" }], `http://127.0.0.1:${server.address().port}`);
+    const out = await writeBriefing(rows, [{ title: FLU_TITLE, url: SEEN, source: "WHO", date: "2026-11-01" }], `http://127.0.0.1:${server.address().port}`);
     assert.equal(out.headline, "Flu is climbing.");
   } finally {
     server.close();
