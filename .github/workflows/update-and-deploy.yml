@@ -1,8 +1,10 @@
 name: Update data and deploy
 
-# GitHub delays or drops scheduled runs most at the start of the hour, so this runs at :41.
+# GitHub often delays or drops scheduled runs, so there are two tries an hour, away from :00.
+# The concurrency group below stops them overlapping.
 on:
   schedule:
+    - cron: "11 * * * *"
     - cron: "41 * * * *"
   workflow_dispatch:
   push:
