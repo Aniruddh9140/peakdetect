@@ -8,7 +8,7 @@ const OUTPUT = "public/data/latest.json";
 const USER_AGENT = "ViraWatch/1.0 (open-source disease dashboard)";
 const DAY = 86_400_000;
 
-const AI_EVERY_MS = 20 * 3_600_000; // once a day: the model takes minutes on a CPU; stats still refresh every run
+const AI_EVERY_MS = 0; // the free model runs on every update; raise this to run it less often
 const GDELT_BUDGET_MS = Number(process.env.GDELT_BUDGET_MS ?? 15 * 60_000);
 const GDELT_GAP_MS = 6_000;
 const NEWS_MAX_AGE = 3 * DAY;

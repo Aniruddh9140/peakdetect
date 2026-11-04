@@ -13,9 +13,9 @@ The site appears at `https://<your-username>.github.io/<repo-name>/`. After that
 
 ## The AI briefing
 
-Once a day the workflow starts a free, open AI model ([Qwen3 4B](https://ollama.com/library/qwen3), Apache 2.0) on GitHub's own machine using [Ollama](https://ollama.com). It reads the measured signals and the latest WHO, ECDC, UKHSA and CDC reports, then writes a short briefing. Every claim must cite one of those reports; anything citing a link it was not given is dropped before publishing. This costs nothing and needs no key.
+On every update the workflow starts a free, open AI model ([Qwen3 4B](https://ollama.com/library/qwen3), Apache 2.0) on GitHub's own machine using [Ollama](https://ollama.com). It reads the measured signals and the latest WHO, ECDC, UKHSA and CDC reports, then writes a short briefing. Every claim must cite one of those reports; anything citing a link it was not given is dropped before publishing. This costs nothing and needs no key.
 
-The model is small and runs without a GPU, so it cannot search the web on its own and writes more simply than a large model. It runs once a day; to change that, edit `AI_EVERY_MS` in `scripts/update-data.mjs`.
+The model is small and runs without a GPU, so it cannot search the web on its own and writes more simply than a large model. It adds about 5-10 minutes to each run; to run it less often, raise `AI_EVERY_MS` in `scripts/update-data.mjs`.
 
 Everything here is free: GitHub Pages and Actions cost nothing for a public repository, and every data source is free.
 

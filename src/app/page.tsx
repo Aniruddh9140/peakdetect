@@ -81,7 +81,7 @@ export default function LandingPage() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {[
             { icon: TrendingUp, title: "Peak detection", desc: "Each disease is compared with its own past year, so you can see what is unusually high right now.", color: "from-red-500 to-pink-500" },
-            { icon: Brain, title: "AI briefing", desc: "Once a day a free, open AI model reads the latest WHO and health-agency reports, checks them against the signals and writes a short briefing.", color: "from-purple-500 to-pink-500" },
+            { icon: Brain, title: "AI briefing", desc: "On every update a free, open AI model reads the latest WHO and health-agency reports, checks them against the signals and writes a short briefing.", color: "from-purple-500 to-pink-500" },
             { icon: Globe2, title: "Global coverage", desc: "28 diseases, from flu and dengue to Ebola and Nipah. Region filters show diseases named in reports from that region; scores themselves are worldwide.", color: "from-blue-500 to-cyan-500" },
             { icon: Bell, title: "Official alerts", desc: "The latest outbreak notices from WHO, ECDC, UKHSA and CDC, gathered in one place.", color: "from-amber-500 to-orange-500" },
             { icon: Shield, title: "Prevention guidance", desc: "Practical steps for each disease, including what actually helps against mosquitoes, water and airborne spread.", color: "from-emerald-500 to-teal-500" },
