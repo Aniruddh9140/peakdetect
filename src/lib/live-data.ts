@@ -15,7 +15,6 @@ export type Signal = { heat: number; growth: number; percentile: number };
 
 export type Assessment = {
   slug: string;
-  phase: Phase;
   summary: string;
   where: string[];
   sources: string[];
@@ -55,7 +54,7 @@ export type LiveData = {
   sources: { name: string; url: string; kind: string; ok: boolean; items: number; error?: string; checkedAt: string }[];
 };
 
-// One disease with its AI reading merged in. The AI's phase wins over the measured one.
+// One disease with its AI summary merged in. The phase always comes from the measured data.
 export type Disease = LiveDisease & { info: CatalogDisease; ai: Assessment | null; displayPhase: Phase };
 
 export const CATALOG = catalog;
@@ -87,7 +86,7 @@ export function useLiveData() {
     const info = catalog.find((c) => c.slug === d.slug);
     if (!info) return [];
     const ai = data?.ai?.assessments.find((a) => a.slug === d.slug) ?? null;
-    return [{ ...d, info, ai, displayPhase: ai?.phase ?? d.phase }];
+    return [{ ...d, info, ai, displayPhase: d.phase }];
   });
 
   return { data, diseases, error, loading: !data && !error };
@@ -97,6 +96,6 @@ export function useLiveData() {
 export const isStale = (data: LiveData) => Date.now() - Date.parse(data.generatedAt) > 24 * 3_600_000;
 
 // The AI disease summary to lead with: a peaking one first, otherwise the highest-scoring one it assessed.
-export const topAssessed = (diseases: Disease[]) => diseases.find((d) => d.ai?.phase === "peaking") ?? diseases.find((d) => d.ai);
+export const topAssessed = (diseases: Disease[]) => diseases.find((d) => d.ai && d.phase === "peaking") ?? diseases.find((d) => d.ai);
 
 export const inRegion = (d: Disease, region: string) => region === "Worldwide" || Boolean(d.regions[region]);

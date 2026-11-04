@@ -9,6 +9,7 @@ const USER_AGENT = "ViraWatch/1.0 (open-source disease dashboard)";
 const DAY = 86_400_000;
 
 const AI_EVERY_MS = 0; // the free model runs on every update; raise this to run it less often
+const AI_TOP = 15; // diseases the AI summarises, highest score first
 const GDELT_BUDGET_MS = Number(process.env.GDELT_BUDGET_MS ?? 15 * 60_000);
 const GDELT_GAP_MS = 6_000;
 const NEWS_MAX_AGE = 3 * DAY;
@@ -334,11 +335,25 @@ async function main() {
   if (ollama && Date.now() - Date.parse(aiAttemptedAt ?? "1970-01-01") > AI_EVERY_MS) {
     aiAttemptedAt = new Date().toISOString();
     // Only official and expert sources go in: open-web headlines are an injection risk.
-    const recent = [...whoReports, ...feeds].filter((h) => (h.date ?? "") >= isoDay(Date.now() - 14 * DAY)).slice(0, 90);
-    // A small model gets a short list so the prompt fits its context window.
-    ai = (await track(aiName, aiUrl, "AI analysis", () => writeBriefing(rows.slice(0, 12), recent.slice(0, 40), ollama))) ?? ai;
+    const recent = [...whoReports, ...feeds].filter((h) => (h.date ?? "") >= isoDay(Date.now() - 14 * DAY));
+    // Each disease cites its own reports plus the data pages its facts come from, so every one of
+    // the top diseases has something real to cite. The #slug keeps a shared data page apart per disease.
+    const withEvidence = rows.slice(0, AI_TOP).map((row) => {
+      const d = diseases.find((x) => x.slug === row.slug);
+      const reports = recent
+        .filter((h) => d.re.test(h.title))
+        .slice(0, 3)
+        .map((h) => ({ url: h.url, title: `${h.source}, ${h.date}: ${h.title}`, summary: h.summary }));
+      const data = [
+        ...row.signals.surveillance.map((s) => ({ url: `${s.url}#${row.slug}`, title: `${row.name}: ${s.label}` })),
+        ...(row.signals.wiki ? [{ url: `https://pageviews.wmcloud.org/?project=en.wikipedia.org&range=latest-90&pages=${d.wiki}`, title: `${row.name}: Wikipedia readership` }] : []),
+      ];
+      return { ...row, evidence: [...reports, ...data] };
+    });
+    const others = recent.filter((h) => !diseases.some((d) => d.re.test(h.title))).slice(0, 15);
+    ai = (await track(aiName, aiUrl, "AI analysis", () => writeBriefing(withEvidence, others, ollama))) ?? ai;
   } else {
-    const error = ollama ? "No current briefing; the next attempt is within a day" : "Runs in GitHub Actions, not on this machine";
+    const error = ollama ? "No current briefing; the next update will try again" : "Runs in GitHub Actions, not on this machine";
     sources.push({ name: aiName, url: aiUrl, kind: "AI analysis", ok: Boolean(ai), items: ai ? 1 : 0, checkedAt: ai?.generatedAt ?? new Date().toISOString(), ...(ai ? {} : { error }) });
   }
 
