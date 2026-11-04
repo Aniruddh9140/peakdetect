@@ -1,7 +1,7 @@
 // Runs on a schedule in GitHub Actions: collects live signals, scores each disease,
 // asks a free open AI model for a cited briefing and writes public/data/latest.json for the site.
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { completeDays, dampNews, factors, heat, regionsIn, score, trendTable, weekly } from "./analyze.mjs";
+import { capSpikes, completeDays, dampNews, factors, heat, mmwrWeekEnd, regionsIn, score, trendTable, weekly } from "./analyze.mjs";
 import { MODEL, writeBriefing } from "./briefing.mjs";
 
 const OUTPUT = "public/data/latest.json";
@@ -129,6 +129,52 @@ async function fluNet() {
   const [flu, rsv] = [typical("fluTests"), typical("rsvTests")];
   const complete = (r) => r.fluTests >= 0.75 * flu && r.rsvTests >= 0.75 * rsv;
   return [...rows.slice(0, -2), ...rows.slice(-2).filter(complete)];
+}
+
+// CDC's weekly notifiable-disease table: reported US cases by MMWR week for many diseases.
+async function nndss() {
+  const year = new Date().getUTCFullYear();
+  const labels = diseases.filter((d) => d.nndss).map((d) => `'${d.nndss}'`).join(",");
+  const where = `states='U.S. Residents' AND year in('${year - 1}','${year}') AND label in(${labels})`;
+  return get(`https://data.cdc.gov/resource/x9gk-5huc.json?$select=year,week,label,m1,m3,m4&$where=${encodeURIComponent(where)}&$limit=5000`);
+}
+
+const MIN_WEEKLY_CASES = 3; // below this a few scattered cases would read as a trend
+
+function reportedCases(rows, label, url) {
+  const weeks = (rows ?? [])
+    .filter((r) => r.label === label)
+    .map((r) => ({ year: r.year, date: mmwrWeekEnd(Number(r.year), Number(r.week)), ytd: Number(r.m3 ?? 0), ytdLastYear: Number(r.m4 ?? 0) }))
+    .sort((a, b) => a.date.localeCompare(b.date));
+  // The "current week" column is patchy (dengue's adds up to under a tenth of its year total), so
+  // a week's cases are the rise in the year-to-date total, which also picks up late reports.
+  weeks.forEach((w, i) => {
+    const before = weeks[i - 1];
+    w.count = Math.max(0, w.ytd - (before?.year === w.year ? before.ytd : 0));
+  });
+  // The latest two weeks are still being reported, so their counts run low.
+  const complete = weeks.slice(0, -2);
+  const counts = capSpikes(complete.map((w) => w.count));
+  const recent = counts.slice(-52);
+  if (!recent.length || recent.reduce((a, c) => a + c, 0) / recent.length < MIN_WEEKLY_CASES) return null;
+  // Weekly counts are noisy and some states report in bursts, so the reading is the latest
+  // 8-week average against the rest of the past two years.
+  const h = heat(counts, 8);
+  if (!h) return null;
+  const average = Math.round(counts.slice(-8).reduce((a, c) => a + c, 0) / 8);
+  return {
+    label: "US reported cases (CDC, 8-week average)",
+    value: average,
+    unit: " a week",
+    date: complete.at(-1).date,
+    change: Math.round(h.growth * 100),
+    comparedWith: "the 8 months before",
+    url,
+    ...h,
+    series: complete.map((w, i) => [w.date, counts[i]]),
+    ytd: weeks.at(-1).ytd,
+    ytdLastYear: weeks.at(-1).ytdLastYear,
+  };
 }
 
 function surveillanceFor(rows, field, label, unit, url, value = (r) => Number(r[field])) {
@@ -263,6 +309,9 @@ async function main() {
     ],
     "covid-19": [surveillanceFor(admissions, "totalconfc19newadm", "US COVID-19 hospital admissions", "", cdcUrl)],
   };
+  const nndssUrl = "https://data.cdc.gov/NNDSS/NNDSS-Weekly-Data/x9gk-5huc";
+  const notifiable = await track("CDC weekly reported cases (US)", nndssUrl, "case data", nndss);
+  for (const d of diseases.filter((x) => x.nndss)) (surveillance[d.slug] ??= []).push(reportedCases(notifiable, d.nndss, nndssUrl));
 
   const pageviews = await track("Wikipedia pageviews", "https://wikimedia.org/api/rest_v1/", "public interest", async () => {
     const all = new Map();

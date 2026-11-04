@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { completeDays, dampNews, heat, phaseOf, regionsIn, score, trendTable, weekly } from "./analyze.mjs";
+import { capSpikes, completeDays, dampNews, heat, mmwrWeekEnd, phaseOf, regionsIn, score, trendTable, weekly } from "./analyze.mjs";
 
 const flat = Array(60).fill(100);
 
@@ -98,4 +98,21 @@ test("disease keywords do not bleed into each other", () => {
   assert.deepEqual(matches("Flu season starts early"), ["influenza"]);
   assert.deepEqual(matches("Middle East respiratory syndrome coronavirus - Saudi Arabia"), []);
   assert.deepEqual(matches("COVID-19 admissions rise"), ["covid-19"]);
+});
+
+test("mmwrWeekEnd matches CDC's Saturday week endings", () => {
+  // CDC hospital data lists week ending 2026-10-24 for MMWR week 42 of 2026.
+  assert.equal(mmwrWeekEnd(2026, 42), "2026-10-24");
+  assert.equal(mmwrWeekEnd(2025, 1), "2025-01-04");
+  assert.equal(mmwrWeekEnd(2024, 52), "2024-12-28");
+});
+
+test("capSpikes trims a catch-up backlog but keeps a real, steady rise", () => {
+  // Shape of CDC's 2026 pertussis counts: steady ~250 a week, then one week of backlog.
+  const capped = capSpikes([250, 240, 260, 255, 245, 6883, 250]);
+  assert.equal(capped[5], 750);
+  assert.equal(capped[6], 250);
+  const rising = [100, 110, 120, 130, 150, 170, 200, 230];
+  assert.deepEqual(capSpikes(rising), rising);
+  assert.deepEqual(capSpikes([0, 0, 0, 0, 5]), [0, 0, 0, 0, 5]);
 });

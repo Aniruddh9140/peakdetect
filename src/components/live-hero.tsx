@@ -1,60 +1,90 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
-import { SourceLinks } from "@/components/live-status";
-import { topAssessed, useLiveData } from "@/lib/live-data";
-import { PHASE_STYLES, cn, relativeTime } from "@/lib/utils";
+import Link from "next/link";
+import { PhaseBadge, ScoreBar, SourceLinks } from "@/components/live-status";
+import { caseCount, topAssessed, useLiveData, versusLastYear } from "@/lib/live-data";
+import { relativeTime } from "@/lib/utils";
 
+// The live board on the home page: today's top five, each with its most concrete number.
 export function LiveHero() {
   const { data, diseases, error } = useLiveData();
-  const top = diseases.slice(0, 5);
   const lead = topAssessed(diseases);
 
   return (
-    <div className="relative">
-      <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/20 via-cyan-500/10 to-indigo-500/20 blur-3xl rounded-full" />
-      <div className="relative rounded-2xl bg-slate-900/70 backdrop-blur-xl border border-white/10 p-6 shadow-2xl">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-400 pulse-dot" />
-            <span className="text-xs font-medium text-red-300">
-              LIVE{data ? ` • updated ${relativeTime(data.generatedAt)}` : ""}
-            </span>
-          </div>
-          <span className="text-xs text-slate-400">Peak score, 0-100</span>
+    <div className="rounded-2xl bg-white border border-stone-200 shadow-sm p-5 md:p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-stone-500">
+          <span className="w-2 h-2 rounded-full bg-red-500 pulse-dot" />
+          Live board
         </div>
+        <span className="text-xs text-stone-500">{data ? `Updated ${relativeTime(data.generatedAt)}` : "Loading"}</span>
+      </div>
 
-        <div className="space-y-3 min-h-64">
-          {error && !data && <p className="text-sm text-slate-300">Live data is unavailable right now.</p>}
-          {top.map((d) => {
-            const style = PHASE_STYLES[d.displayPhase] ?? PHASE_STYLES.baseline;
-            return (
-              <div key={d.slug} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
-                <div className="text-2xl">{d.info.emoji}</div>
+      {error && !data && <p className="text-sm text-stone-600">Live data is unavailable right now.</p>}
+
+      <ol className="divide-y divide-stone-100">
+        {diseases.slice(0, 5).map((d, i) => {
+          const cases = caseCount(d);
+          return (
+            <li key={d.slug}>
+              <Link href={`/dashboard/predictions/?disease=${d.slug}`} className="flex items-center gap-3 py-3 group">
+                <span className="w-5 text-sm font-bold text-stone-400 tabular-nums">{i + 1}</span>
+                <span className="text-2xl">{d.info.emoji}</span>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium truncate">{d.name}</span>
-                    <span className="text-xs font-bold text-slate-200">{d.score}/100</span>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-semibold text-stone-900 group-hover:underline">{d.name}</span>
+                    <PhaseBadge phase={d.displayPhase} />
                   </div>
-                  <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                    <div className={cn("h-full rounded-full bg-gradient-to-r", style.gradient)} style={{ width: `${d.score}%` }} />
+                  <p className="text-xs text-stone-500 mt-0.5 truncate">
+                    {cases
+                      ? `${cases.ytd?.toLocaleString("en-US")} US cases this year, ${versusLastYear(cases.ytd ?? 0, cases.ytdLastYear ?? 0)}`
+                      : d.officialReports
+                        ? `${d.officialReports} WHO outbreak ${d.officialReports === 1 ? "report" : "reports"} in 45 days`
+                        : d.factors[0]}
+                  </p>
+                  <div className="mt-1.5">
+                    <ScoreBar disease={d} />
                   </div>
                 </div>
-                <div className="text-xs text-slate-300 text-right w-16 font-medium">{style.label}</div>
-              </div>
-            );
-          })}
-        </div>
+                <span className="text-lg font-bold text-stone-900 tabular-nums w-9 text-right">{d.score}</span>
+              </Link>
+            </li>
+          );
+        })}
+      </ol>
 
-        {lead?.ai && (
-          <div className="mt-5 p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-start gap-2.5">
-            <Sparkles className="w-4 h-4 text-cyan-400 mt-0.5 shrink-0" />
-            <p className="text-xs text-cyan-100 leading-snug">
-              <strong>AI briefing, {lead.name}:</strong> {lead.ai.summary} Source: <SourceLinks urls={lead.ai.sources} onDark />. Written by a small AI model; it can make mistakes.
-            </p>
+      {lead?.ai && (
+        <div className="mt-4 rounded-xl bg-stone-50 border border-stone-200 p-3 text-sm text-stone-700 leading-snug">
+          <span className="font-semibold text-stone-900">{lead.name}: </span>
+          {lead.ai.summary} <SourceLinks urls={lead.ai.sources} />
+          <span className="block text-xs text-stone-500 mt-1">Summary written by a small open-source AI from the linked source. It can make mistakes.</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Big year-to-date numbers from CDC case reports: the most concrete thing the site knows.
+export function YearInNumbers() {
+  const { diseases } = useLiveData();
+  const rows = diseases
+    .map((d) => ({ d, c: caseCount(d) }))
+    .filter((x) => x.c?.ytd)
+    .sort((a, b) => (b.c!.ytd! / (b.c!.ytdLastYear || 1)) - (a.c!.ytd! / (a.c!.ytdLastYear || 1)))
+    .slice(0, 4);
+  if (!rows.length) return null;
+  return (
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {rows.map(({ d, c }) => (
+        <Link key={d.slug} href={`/dashboard/predictions/?disease=${d.slug}`} className="rounded-2xl bg-white border border-stone-200 p-5 hover:border-stone-300 transition">
+          <div className="text-sm text-stone-500">{d.info.emoji} {d.name}</div>
+          <div className="text-3xl font-black text-stone-900 mt-1 tabular-nums">{c!.ytd!.toLocaleString("en-US")}</div>
+          <div className="text-sm text-stone-600 mt-1">US cases so far this year</div>
+          <div className={`text-sm font-semibold mt-2 ${c!.ytd! > (c!.ytdLastYear ?? 0) ? "text-red-600" : "text-emerald-700"}`}>
+            {versusLastYear(c!.ytd!, c!.ytdLastYear ?? 0)}
           </div>
-        )}
-      </div>
+        </Link>
+      ))}
     </div>
   );
 }

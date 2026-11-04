@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Activity, AlertTriangle, ArrowUpRight, Bell, Sparkles, TrendingUp } from "lucide-react";
-import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, StatCard } from "@/components/ui/card";
+import { Activity, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, TrendingUp } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, StatCard } from "@/components/ui/card";
 import { AiLabel, DataNotice, PageSkeleton, PhaseBadge, ScoreBar, SourceLinks } from "@/components/live-status";
+import { YearInNumbers } from "@/components/live-hero";
 import { TrendChart } from "@/components/trend-chart";
-import { REGIONS, inRegion, topAssessed, useLiveData } from "@/lib/live-data";
-import { relativeTime } from "@/lib/utils";
+import { REGIONS, caseCount, inRegion, topAssessed, useLiveData } from "@/lib/live-data";
+import { PHASE_STYLES, cn, relativeTime } from "@/lib/utils";
 
 const DAY = 86_400_000;
 
@@ -19,25 +20,27 @@ export default function DashboardOverview() {
   const peaking = shown.filter((d) => d.displayPhase === "peaking");
   const rising = shown.filter((d) => d.displayPhase === "rising");
   const lead = peaking[0] ?? shown[0];
-  const peakingCount = diseases.filter((d) => d.displayPhase === "peaking").length;
-  const top = topAssessed(diseases);
+  const top = topAssessed(diseases) ?? diseases[0];
+  const withCases = diseases.filter((d) => d.signals.surveillance.length).length;
+  const movers = diseases
+    .filter((d) => d.previousScore !== null && d.score !== d.previousScore)
+    .sort((a, b) => Math.abs(b.score - b.previousScore!) - Math.abs(a.score - a.previousScore!))
+    .slice(0, 5);
   const alerts = (data?.alerts ?? []).filter((a) => region === "Worldwide" || a.regions.includes(region));
   const recentAlerts = alerts.filter((a) => Date.parse(data?.generatedAt ?? "") - Date.parse(a.date ?? "") < 30 * DAY).length;
 
   return (
     <div className="fade-in space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">
-            What&apos;s peaking right now
-          </h1>
-          <p className="text-slate-500 mt-1 text-sm">
+          <h1 className="text-2xl md:text-3xl font-black tracking-tight text-stone-900">This week in disease activity</h1>
+          <p className="text-stone-500 mt-1 text-sm">
             {data ? `Updated ${relativeTime(data.generatedAt)}. ` : ""}Diseases named in reports from{" "}
             <select
               aria-label="Region"
               value={region}
               onChange={(e) => setRegion(e.target.value)}
-              className="border-0 border-b border-dashed border-slate-300 bg-transparent text-slate-700 font-medium text-sm focus:border-blue-500 focus:outline-none cursor-pointer"
+              className="border-0 border-b border-dashed border-stone-400 bg-transparent text-stone-800 font-medium text-sm focus:border-red-500 focus:outline-none cursor-pointer"
             >
               {REGIONS.map((r) => (
                 <option key={r}>{r}</option>
@@ -51,40 +54,42 @@ export default function DashboardOverview() {
       <DataNotice data={data} error={error} />
       {loading && <PageSkeleton />}
 
-      {data && (
+      {data && top && (
         <>
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 p-6 text-white">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(56,189,248,0.2),transparent_60%)]" />
-            <div className="relative flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-400/30 grid place-items-center shrink-0">
-                <Sparkles className="w-5 h-5 text-cyan-300" />
-              </div>
-              <div className="min-w-0">
-                <h2 className="font-semibold">
-                  {top?.ai ? `${top.name}: ${top.ai.summary}` : `${peakingCount} ${peakingCount === 1 ? "disease is" : "diseases are"} scoring as peaking`}
-                </h2>
-                {top?.ai && (
-                  <p className="text-sm text-slate-300 mt-1">
-                    Source: <SourceLinks urls={top.ai.sources} onDark />. Written by a small AI model from this report; it can make mistakes.
-                  </p>
-                )}
-                <p className="text-sm text-slate-300 mt-1 max-w-3xl leading-relaxed">
-                  Scores compare each disease with its own past year. They do not count how many people are sick or say how likely you are to catch anything.
-                </p>
-              </div>
+          <Card className={cn("border-l-4 p-6", PHASE_STYLES[top.displayPhase]?.solid.replace("bg-", "border-l-"))}>
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-stone-500 mb-2">
+              Top story <PhaseBadge phase={top.displayPhase} />
             </div>
-          </div>
+            <h2 className="text-xl md:text-2xl font-black text-stone-900">
+              {top.info.emoji} {top.name}
+            </h2>
+            <p className="text-stone-700 mt-2 max-w-3xl leading-relaxed">{top.ai?.summary ?? top.factors[0]}</p>
+            {top.ai && (
+              <p className="text-xs text-stone-500 mt-2">
+                Source: <SourceLinks urls={top.ai.sources} />. Summary written by a small open-source AI from this source; it can make mistakes.
+              </p>
+            )}
+            <p className="text-xs text-stone-500 mt-3">
+              Scores compare each disease with its own past. They do not count how many people are sick or say how likely you are to catch anything.
+            </p>
+          </Card>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard label="Peaking now" value={peaking.length} icon={TrendingUp} accent="red" />
             <StatCard label="Rising" value={rising.length} icon={AlertTriangle} accent="amber" />
             <StatCard label="Official alerts, 30 days" value={recentAlerts} icon={Bell} accent="purple" />
-            <StatCard label="Diseases listed" value={shown.length} icon={Activity} accent="blue" />
+            <StatCard label="Diseases with case data" value={`${withCases} of ${diseases.length}`} icon={Activity} accent="blue" />
           </div>
+
+          <section>
+            <h2 className="text-lg font-bold text-stone-900 mb-1">This year in numbers</h2>
+            <p className="text-sm text-stone-500 mb-3">Reported US cases so far this year against the same point last year (CDC).</p>
+            <YearInNumbers />
+          </section>
 
           {shown.length === 0 && (
             <Card>
-              <CardContent className="p-6 text-sm text-slate-500">
+              <CardContent className="p-6 text-sm text-stone-500">
                 No recent reports name {region}. This does not mean there is no disease activity there, only that the sources we read did not mention it.
               </CardContent>
             </Card>
@@ -96,33 +101,38 @@ export default function DashboardOverview() {
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle>Ranked by peak score</CardTitle>
-                    <CardDescription>Higher means more unusual for this disease than its past year, not more cases</CardDescription>
+                    <CardDescription>Higher means more unusual for this disease than its own past, not more cases</CardDescription>
                   </div>
-                  <Link href="/dashboard/predictions/" className="text-sm font-medium text-blue-600 hover:text-blue-700 inline-flex items-center gap-1 whitespace-nowrap">
+                  <Link href="/dashboard/predictions/" className="text-sm font-medium text-red-600 hover:text-red-700 inline-flex items-center gap-1 whitespace-nowrap">
                     See all <ArrowUpRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {shown.slice(0, 8).map((d) => (
-                    <Link
-                      key={d.slug}
-                      href={`/dashboard/predictions/?disease=${d.slug}`}
-                      className="flex items-center gap-4 p-3 rounded-xl border border-slate-100 hover:bg-slate-50 hover:border-slate-200 transition"
-                    >
-                      <div className="text-2xl shrink-0">{d.info.emoji}</div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap mb-1.5">
-                          <span className="font-semibold text-slate-900 truncate">{d.name}</span>
-                          <PhaseBadge phase={d.displayPhase} />
+                  {shown.slice(0, 10).map((d, i) => {
+                    const cases = caseCount(d);
+                    return (
+                      <Link
+                        key={d.slug}
+                        href={`/dashboard/predictions/?disease=${d.slug}`}
+                        className="flex items-center gap-4 p-3 rounded-xl border border-stone-100 hover:bg-stone-50 hover:border-stone-200 transition"
+                      >
+                        <span className="w-5 text-sm font-bold text-stone-400 tabular-nums">{i + 1}</span>
+                        <div className="text-2xl shrink-0">{d.info.emoji}</div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                            <span className="font-semibold text-stone-900 truncate">{d.name}</span>
+                            <PhaseBadge phase={d.displayPhase} />
+                            {cases && <span className="text-xs text-stone-500">{cases.value.toLocaleString("en-US")} US cases a week</span>}
+                          </div>
+                          <ScoreBar disease={d} />
+                          <p className="text-xs text-stone-500 mt-1.5 line-clamp-2">{d.ai?.summary ?? d.factors[0]}</p>
                         </div>
-                        <ScoreBar disease={d} />
-                        <p className="text-xs text-slate-500 mt-1.5 line-clamp-2">{d.ai?.summary ?? d.factors[0]}</p>
-                      </div>
-                      <div className="text-lg font-bold text-slate-900 shrink-0">{d.score}</div>
-                    </Link>
-                  ))}
+                        <div className="text-lg font-bold text-stone-900 shrink-0 tabular-nums">{d.score}</div>
+                      </Link>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
@@ -130,8 +140,39 @@ export default function DashboardOverview() {
             <div className="space-y-6">
               <Card>
                 <CardHeader>
+                  <CardTitle>Biggest movers</CardTitle>
+                  <CardDescription>Score change since the last update</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {movers.length ? (
+                    <ul className="space-y-2.5">
+                      {movers.map((d) => {
+                        const change = d.score - d.previousScore!;
+                        return (
+                          <li key={d.slug} className="flex items-center gap-2 text-sm">
+                            <span>{d.info.emoji}</span>
+                            <Link href={`/dashboard/predictions/?disease=${d.slug}`} className="flex-1 font-medium text-stone-800 hover:underline truncate">
+                              {d.name}
+                            </Link>
+                            <span className={cn("inline-flex items-center gap-0.5 font-semibold tabular-nums", change > 0 ? "text-red-600" : "text-emerald-700")}>
+                              {change > 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
+                              {change > 0 ? "+" : ""}
+                              {change}
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-stone-500">No score changed since the last update.</p>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Bell className="w-4 h-4 text-purple-600" />
+                    <Bell className="w-4 h-4 text-red-600" />
                     Latest official alerts
                   </CardTitle>
                 </CardHeader>
@@ -139,15 +180,15 @@ export default function DashboardOverview() {
                   <ul className="space-y-3">
                     {alerts.slice(0, 5).map((a) => (
                       <li key={a.url} className="text-sm">
-                        <a href={a.url} target="_blank" rel="noreferrer" className="font-medium text-slate-800 hover:text-blue-700 leading-snug">
+                        <a href={a.url} target="_blank" rel="noreferrer" className="font-medium text-stone-800 hover:text-red-700 leading-snug">
                           {a.title}
                         </a>
-                        <div className="text-xs text-slate-500 mt-0.5">{a.source} · {a.date}</div>
+                        <div className="text-xs text-stone-500 mt-0.5">{a.source} · {a.date}</div>
                       </li>
                     ))}
-                    {!alerts.length && <li className="text-sm text-slate-500">No recent alerts for this region.</li>}
+                    {!alerts.length && <li className="text-sm text-stone-500">No recent alerts for this region.</li>}
                   </ul>
-                  <Link href="/dashboard/alerts/" className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700">
+                  <Link href="/dashboard/alerts/" className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-red-600 hover:text-red-700">
                     All alerts <ArrowUpRight className="w-3.5 h-3.5" />
                   </Link>
                 </CardContent>
@@ -156,14 +197,14 @@ export default function DashboardOverview() {
               {Boolean(data.ai?.emerging.length) && (
                 <Card>
                   <CardHeader>
-                    <CardTitle>Also on the AI&apos;s radar</CardTitle>
+                    <CardTitle>Also in the news</CardTitle>
                     <CardDescription>Named in official reports, outside the tracked list</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {data.ai?.emerging.map((e) => (
                       <div key={e.name} className="text-sm">
-                        <div className="font-medium text-slate-900">{e.name}</div>
-                        <p className="text-slate-600 leading-snug mt-0.5">{e.summary}</p>
+                        <div className="font-medium text-stone-900">{e.name}</div>
+                        <p className="text-stone-600 leading-snug mt-0.5">{e.summary}</p>
                         <SourceLinks urls={e.sources} />
                       </div>
                     ))}
@@ -176,13 +217,8 @@ export default function DashboardOverview() {
           {lead && (
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <CardTitle>{lead.name}: six-month trend</CardTitle>
-                    <CardDescription>Each line is a percentage of its own high, so compare the shapes and not the heights</CardDescription>
-                  </div>
-                  <Badge variant="outline">Top of the list</Badge>
-                </div>
+                <CardTitle>{lead.name}: trend</CardTitle>
+                <CardDescription>Each line is a percentage of its own high, so compare the shapes and not the heights</CardDescription>
               </CardHeader>
               <CardContent>
                 <TrendChart trend={lead.trend} />

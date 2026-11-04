@@ -27,7 +27,7 @@
     "prevention": ["Ask about RSV vaccines for pregnancy and older adults, and antibodies for infants", "Keep sick contacts away from young babies", "Wash hands and clean shared toys and surfaces"]
   },
   {
-    "slug": "dengue", "name": "Dengue", "category": "viral", "emoji": "🦟", "severity": "severe", "vaccine": true,
+    "slug": "dengue", "nndss": "Dengue virus infections, Dengue", "name": "Dengue", "category": "viral", "emoji": "🦟", "severity": "severe", "vaccine": true,
     "wiki": "Dengue_fever", "gdelt": "dengue", "keywords": "dengue",
     "incubation": "4-10 days", "seasonality": "Rainy and monsoon seasons",
     "description": "A mosquito-borne viral infection found across tropical and subtropical regions. Most cases are mild, but severe dengue can cause bleeding and shock and needs urgent care.",
@@ -36,7 +36,7 @@
     "prevention": ["Remove standing water around your home", "Use insect repellent, especially in the daytime", "Wear long sleeves and use screens or nets", "Avoid aspirin and ibuprofen if dengue is possible, and see a doctor"]
   },
   {
-    "slug": "chikungunya", "name": "Chikungunya", "category": "viral", "emoji": "🦵", "severity": "moderate", "vaccine": true,
+    "slug": "chikungunya", "nndss": "Arboviral diseases, Chikungunya virus disease", "name": "Chikungunya", "category": "viral", "emoji": "🦵", "severity": "moderate", "vaccine": true,
     "wiki": "Chikungunya", "gdelt": "chikungunya", "keywords": "chikungunya",
     "incubation": "3-7 days", "seasonality": "Rainy seasons",
     "description": "A mosquito-borne virus causing sudden fever and severe joint pain, which can last for months.",
@@ -45,7 +45,7 @@
     "prevention": ["Remove standing water around your home", "Use insect repellent and protective clothing", "Check travel vaccine advice for affected areas"]
   },
   {
-    "slug": "malaria", "name": "Malaria", "category": "parasitic", "emoji": "🩸", "severity": "severe", "vaccine": true,
+    "slug": "malaria", "nndss": "Malaria", "name": "Malaria", "category": "parasitic", "emoji": "🩸", "severity": "severe", "vaccine": true,
     "wiki": "Malaria", "gdelt": "malaria", "keywords": "malaria",
     "incubation": "7-30 days", "seasonality": "Rainy seasons in endemic areas",
     "description": "A life-threatening parasitic disease spread by Anopheles mosquitoes. It is preventable and curable, but needs fast diagnosis and treatment.",
@@ -54,7 +54,7 @@
     "prevention": ["Sleep under insecticide-treated nets", "Take recommended preventive medicine when travelling", "Use repellent after dusk", "Get tested immediately if you have a fever after being in a malaria area"]
   },
   {
-    "slug": "zika", "name": "Zika", "category": "viral", "emoji": "🤰", "severity": "moderate", "vaccine": false,
+    "slug": "zika", "nndss": "Zika virus disease, non-congenital", "name": "Zika", "category": "viral", "emoji": "🤰", "severity": "moderate", "vaccine": false,
     "wiki": "Zika_fever", "gdelt": "zika", "keywords": "\\bzika\\b",
     "incubation": "3-14 days", "seasonality": "Rainy seasons",
     "description": "A mosquito-borne infection that is usually mild, but infection during pregnancy can cause serious birth defects.",
@@ -63,7 +63,7 @@
     "prevention": ["Prevent mosquito bites", "If pregnant, check travel advice before visiting affected areas", "Follow guidance on safer sex after travel to affected areas"]
   },
   {
-    "slug": "west-nile", "name": "West Nile virus", "category": "viral", "emoji": "🦅", "severity": "moderate", "vaccine": false,
+    "slug": "west-nile", "nndss": "Arboviral diseases, West Nile virus disease", "name": "West Nile virus", "category": "viral", "emoji": "🦅", "severity": "moderate", "vaccine": false,
     "wiki": "West_Nile_fever", "gdelt": "\"west nile\"", "keywords": "west nile",
     "incubation": "2-14 days", "seasonality": "Summer and early autumn",
     "description": "Spread by Culex mosquitoes. Most infections cause no symptoms, but a small share develop serious neurological illness.",
@@ -72,7 +72,7 @@
     "prevention": ["Use repellent at dusk and dawn", "Wear long sleeves outdoors", "Empty standing water"]
   },
   {
-    "slug": "cholera", "name": "Cholera", "category": "bacterial", "emoji": "💧", "severity": "severe", "vaccine": true,
+    "slug": "cholera", "nndss": "Cholera", "name": "Cholera", "category": "bacterial", "emoji": "💧", "severity": "severe", "vaccine": true,
     "wiki": "Cholera", "gdelt": "cholera", "keywords": "cholera",
     "incubation": "12 hours to 5 days", "seasonality": "Linked to floods, conflict and unsafe water",
     "description": "An acute diarrhoeal infection from contaminated water or food. It can kill within hours without treatment, but oral rehydration works well.",
@@ -90,7 +90,7 @@
     "prevention": ["Get vaccinated if you live in or travel to affected areas", "Drink safe water", "Wash hands before eating"]
   },
   {
-    "slug": "hepatitis-a", "name": "Hepatitis A", "category": "viral", "emoji": "🟡", "severity": "moderate", "vaccine": true,
+    "slug": "hepatitis-a", "nndss": "Hepatitis A, Confirmed", "name": "Hepatitis A", "category": "viral", "emoji": "🟡", "severity": "moderate", "vaccine": true,
     "wiki": "Hepatitis_A", "gdelt": "\"hepatitis A\"", "keywords": "hepatitis a\\b",
     "incubation": "14-28 days", "seasonality": "Year-round; outbreaks linked to food and water",
     "description": "A vaccine-preventable liver infection spread by contaminated food, water or close contact.",
@@ -108,7 +108,7 @@
     "prevention": ["Wash hands with soap, since alcohol gel works poorly on norovirus", "Clean surfaces with a bleach-based product", "Do not prepare food for others until 2 days after symptoms stop"]
   },
   {
-    "slug": "measles", "name": "Measles", "category": "viral", "emoji": "🔴", "severity": "severe", "vaccine": true,
+    "slug": "measles", "nndss": "Measles, Indigenous", "name": "Measles", "category": "viral", "emoji": "🔴", "severity": "severe", "vaccine": true,
     "wiki": "Measles", "gdelt": "measles", "keywords": "measles",
     "incubation": "10-14 days", "seasonality": "Late winter and spring; outbreaks follow vaccination gaps",
     "description": "One of the most contagious viruses known. It can cause pneumonia and brain swelling, and two doses of vaccine give strong protection.",
@@ -117,7 +117,7 @@
     "prevention": ["Check that you and your children have two MMR doses", "Call ahead before visiting a clinic if you suspect measles", "Isolate until 4 days after the rash starts"]
   },
   {
-    "slug": "mpox", "name": "Mpox", "category": "viral", "emoji": "🔬", "severity": "moderate", "vaccine": true,
+    "slug": "mpox", "nndss": "Mpox", "name": "Mpox", "category": "viral", "emoji": "🔬", "severity": "moderate", "vaccine": true,
     "wiki": "Mpox", "gdelt": "(mpox OR monkeypox)", "keywords": "mpox|monkeypox",
     "incubation": "3-17 days", "seasonality": "Year-round",
     "description": "A viral illness that causes a painful rash and swollen lymph nodes, spread mainly through close physical contact.",
@@ -171,7 +171,7 @@
     "prevention": ["Store food in rodent-proof containers", "Keep homes clean and free of rodents", "Seek early care, since early treatment improves survival"]
   },
   {
-    "slug": "yellow-fever", "name": "Yellow fever", "category": "viral", "emoji": "🟨", "severity": "severe", "vaccine": true,
+    "slug": "yellow-fever", "nndss": "Yellow fever", "name": "Yellow fever", "category": "viral", "emoji": "🟨", "severity": "severe", "vaccine": true,
     "wiki": "Yellow_fever", "gdelt": "\"yellow fever\"", "keywords": "yellow fever",
     "incubation": "3-6 days", "seasonality": "Rainy seasons in Africa and South America",
     "description": "A mosquito-borne viral disease that can cause jaundice and bleeding. One vaccine dose gives long-lasting protection.",
@@ -180,7 +180,7 @@
     "prevention": ["Get vaccinated before visiting risk areas", "Use repellent and protective clothing"]
   },
   {
-    "slug": "polio", "name": "Polio", "category": "viral", "emoji": "🦽", "severity": "severe", "vaccine": true,
+    "slug": "polio", "nndss": "Poliomyelitis, paralytic", "name": "Polio", "category": "viral", "emoji": "🦽", "severity": "severe", "vaccine": true,
     "wiki": "Polio", "gdelt": "(polio OR poliovirus)", "keywords": "polio",
     "incubation": "7-14 days", "seasonality": "Warmer months",
     "description": "A vaccine-preventable virus that can cause permanent paralysis. It remains targeted for global eradication.",
@@ -189,7 +189,7 @@
     "prevention": ["Complete the polio vaccination schedule", "Check booster advice before travel", "Practise good sanitation and hand hygiene"]
   },
   {
-    "slug": "pertussis", "name": "Whooping cough (pertussis)", "category": "bacterial", "emoji": "😮‍💨", "severity": "moderate", "vaccine": true,
+    "slug": "pertussis", "nndss": "Pertussis", "name": "Whooping cough (pertussis)", "category": "bacterial", "emoji": "😮‍💨", "severity": "moderate", "vaccine": true,
     "wiki": "Whooping_cough", "gdelt": "(\"whooping cough\" OR pertussis)", "keywords": "whooping cough|pertussis",
     "incubation": "7-10 days", "seasonality": "Cycles every 3-5 years",
     "description": "A very contagious bacterial infection causing violent coughing fits. It is most dangerous for babies.",
@@ -225,7 +225,7 @@
     "prevention": ["Wash hands and do not share cups", "Finish prescribed antibiotics", "Seek urgent care for fast-worsening pain, swelling or breathing trouble"]
   },
   {
-    "slug": "meningitis", "name": "Meningococcal meningitis", "category": "bacterial", "emoji": "🧠", "severity": "critical", "vaccine": true,
+    "slug": "meningitis", "nndss": "Meningococcal disease, All serogroups", "name": "Meningococcal meningitis", "category": "bacterial", "emoji": "🧠", "severity": "critical", "vaccine": true,
     "wiki": "Meningitis", "gdelt": "meningitis", "keywords": "meningitis|meningococcal",
     "incubation": "2-10 days", "seasonality": "Dry season in the African meningitis belt",
     "description": "An infection of the membranes around the brain and spinal cord. Bacterial meningitis is a medical emergency.",
@@ -234,7 +234,7 @@
     "prevention": ["Keep meningococcal vaccines up to date", "Get emergency care for fever with a stiff neck or a rash that does not fade when pressed"]
   },
   {
-    "slug": "legionnaires", "name": "Legionnaires' disease", "category": "bacterial", "emoji": "🏨", "severity": "severe", "vaccine": false,
+    "slug": "legionnaires", "nndss": "Legionellosis", "name": "Legionnaires' disease", "category": "bacterial", "emoji": "🏨", "severity": "severe", "vaccine": false,
     "wiki": "Legionnaires'_disease", "gdelt": "(legionnaires OR legionella)", "keywords": "legionnaires|legionella",
     "incubation": "2-14 days", "seasonality": "Summer and early autumn",
     "description": "A severe pneumonia caught by breathing water droplets from contaminated systems such as cooling towers, hot tubs and building plumbing.",

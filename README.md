@@ -25,8 +25,8 @@ Everything here is free: GitHub Pages and Actions cost nothing for a public repo
 
 | Signal | Source | Weight |
 |---|---|---|
-| Case data | CDC hospital admissions, WHO FluNet (flu, RSV and COVID-19 only) | 50% |
-| News coverage | GDELT global news index | 30% |
+| Case data | CDC hospital admissions and WHO FluNet (flu, RSV, COVID-19); CDC weekly notifiable disease reports (measles, whooping cough, dengue, West Nile, Legionnaires', malaria, mpox, hepatitis A, chikungunya, meningococcal disease) | 60% |
+| News coverage | GDELT global news index | 20% |
 | Public interest | Wikipedia pageviews | 20% |
 | Official reports | WHO Disease Outbreak News | up to +10 points |
 

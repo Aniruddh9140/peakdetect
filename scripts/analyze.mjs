@@ -1,7 +1,8 @@
 // Pure scoring logic: turns raw signal series into a 0-100 peak score and a phase.
 // A score compares a disease with its own recent history, not with other diseases.
 
-const WEIGHTS = { surveillance: 0.5, news: 0.3, wiki: 0.2 };
+// Reported cases are the most reliable signal, so they carry the most weight.
+const WEIGHTS = { surveillance: 0.6, news: 0.2, wiki: 0.2 };
 const MIN_ARTICLES_PER_DAY = 5;
 const PEAK_SCORE = 70;
 
@@ -37,6 +38,24 @@ export function completeDays(days) {
   return days.filter((d) => d.norm >= typical / 2);
 }
 
+// CDC sometimes logs a backlog of old cases in one week (6,883 pertussis cases in week 29 of 2026,
+// against about 250 normally), so a week counts as at most 3x the average of the 8 weeks before it.
+// The average, not the median, because some diseases are reported in bursts with empty weeks between.
+export function capSpikes(counts) {
+  return counts.map((c, i) => {
+    const prior = counts.slice(Math.max(0, i - 8), i);
+    const average = prior.reduce((s, x) => s + x, 0) / prior.length;
+    return prior.length >= 4 && average > 0 ? Math.min(c, 3 * average) : c;
+  });
+}
+
+// CDC counts cases by MMWR week: Sunday to Saturday, week 1 being the first with 4+ days in January.
+export function mmwrWeekEnd(year, week) {
+  const dow = new Date(Date.UTC(year, 0, 1)).getUTCDay();
+  const firstSunday = dow <= 3 ? -dow : 7 - dow;
+  return new Date(Date.UTC(year, 0, 1 + firstSunday + (week - 1) * 7 + 6)).toISOString().slice(0, 10);
+}
+
 export function phaseOf(score, growth) {
   if (score >= PEAK_SCORE && growth > -0.15) return "peaking";
   if (score >= 45 && growth >= 0.25) return "rising";
@@ -61,9 +80,10 @@ export function score({ surveillance, news, wiki }, officialReports = 0) {
 const multiple = (growth) => `${(1 + growth).toFixed(1)}x`;
 
 export function factors({ news, wiki, surveillance }, officialReports, articlesPerDay) {
-  const out = (surveillance ?? []).map(
-    (s) => `${s.label}: ${s.value.toLocaleString("en-US")}${s.unit} for the week of ${s.date}, ${s.change >= 0 ? "up" : "down"} ${Math.abs(s.change)}% on the month before`
-  );
+  const out = (surveillance ?? []).flatMap((s) => [
+    `${s.label}: ${s.value.toLocaleString("en-US")}${s.unit} for the week of ${s.date}, ${s.change >= 0 ? "up" : "down"} ${Math.abs(s.change)}% on ${s.comparedWith ?? "the month before"}`,
+    ...(s.ytd !== undefined ? [`${s.ytd.toLocaleString("en-US")} US cases so far this year, against ${s.ytdLastYear.toLocaleString("en-US")} by this time last year`] : []),
+  ]);
   if (news) out.push(`News coverage is ${multiple(news.growth)} its previous 4 weeks (about ${Math.round(articlesPerDay)} English articles a day, up to ${news.through})`);
   if (wiki) out.push(`Wikipedia readership is at the ${wiki.percentile}th percentile of the past year`);
   if (officialReports) out.push(`WHO published ${officialReports} Disease Outbreak News ${officialReports === 1 ? "report" : "reports"} in the last 45 days`);

@@ -33,7 +33,7 @@ export type LiveDisease = {
   signals: {
     news: (Signal & { perDay: number; fetchedAt: string }) | null;
     wiki: Signal | null;
-    surveillance: (Signal & { label: string; value: number; unit: string; date: string; change: number; url: string })[];
+    surveillance: (Signal & { label: string; value: number; unit: string; date: string; change: number; url: string; comparedWith?: string; ytd?: number; ytdLastYear?: number })[];
   };
   trend: { date: string; news?: number; wiki?: number; cases?: number }[];
   articles: Link[];
@@ -97,5 +97,16 @@ export const isStale = (data: LiveData) => Date.now() - Date.parse(data.generate
 
 // The AI disease summary to lead with: a peaking one first, otherwise the highest-scoring one it assessed.
 export const topAssessed = (diseases: Disease[]) => diseases.find((d) => d.ai && d.phase === "peaking") ?? diseases.find((d) => d.ai);
+
+// CDC reported-case figures, where this disease has them.
+export const caseCount = (d: Disease) => d.signals.surveillance.find((s) => s.ytd !== undefined);
+
+// "2.9x last year" or "41% below last year", for a year-to-date comparison.
+export const versusLastYear = (now: number, before: number) =>
+  !before
+    ? "none by this time last year"
+    : now >= before
+      ? `${(now / before).toFixed(1)}x last year`
+      : `${Math.round((1 - now / before) * 100)}% below last year`;
 
 export const inRegion = (d: Disease, region: string) => region === "Worldwide" || Boolean(d.regions[region]);

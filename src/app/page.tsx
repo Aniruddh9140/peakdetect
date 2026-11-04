@@ -1,151 +1,132 @@
 import Link from "next/link";
-import {
-  Activity,
-  Shield,
-  Brain,
-  Globe2,
-  Bell,
-  TrendingUp,
-  Database,
-  ArrowRight,
-  AlertTriangle,
-} from "lucide-react";
-import { LiveHero } from "@/components/live-hero";
+import { Activity, ArrowRight, AlertTriangle, BarChart3, Bell, BookOpen, Globe2, ShieldCheck, Stethoscope } from "lucide-react";
+import { LiveHero, YearInNumbers } from "@/components/live-hero";
+
+const FEATURES = [
+  { icon: BarChart3, title: "Peak score for 28 diseases", desc: "Each disease is compared with its own past two years, so you see what is unusual right now, not just what is common." },
+  { icon: Activity, title: "Real case numbers", desc: "Weekly CDC case counts, US hospital admissions and WHO lab data count for the most. Attention alone can never mark a disease as peaking." },
+  { icon: Bell, title: "Official alerts", desc: "The latest outbreak notices from WHO, ECDC, UKHSA and CDC in one list, filtered by region." },
+  { icon: BookOpen, title: "Plain-English summaries", desc: "A free, open-source AI explains the numbers for the top 15 diseases. Every summary links the source it used." },
+  { icon: ShieldCheck, title: "Prevention guides", desc: "What actually helps for each disease, from mosquito control to safe water and vaccines." },
+  { icon: Stethoscope, title: "Symptom checker", desc: "Compare your symptoms with tracked diseases. It runs in your browser and nothing you type is sent anywhere." },
+];
+
+const STEPS = [
+  { title: "Collect", desc: "Pull weekly case counts, hospital and lab data, outbreak reports and Wikipedia readership." },
+  { title: "Score", desc: "Compare each disease with its own history, cap reporting backlogs, and weight real cases highest." },
+  { title: "Explain", desc: "An open-source AI writes a short, cited summary. Any claim without a matching source is dropped." },
+  { title: "Publish", desc: "The site rebuilds itself on GitHub every few hours. No servers, no keys, no cost." },
+];
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white">
-      {/* Nav */}
-      <nav className="flex items-center justify-between px-6 md:px-10 py-5 max-w-7xl mx-auto">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 grid place-items-center shadow-lg shadow-blue-500/30">
-            <Activity className="w-5 h-5 text-white" />
+    <div className="min-h-screen bg-stone-50 text-stone-900">
+      <nav className="bg-white border-b border-stone-200">
+        <div className="max-w-6xl mx-auto px-5 md:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-lg bg-red-600 grid place-items-center">
+              <Activity className="w-5 h-5 text-white" />
+            </div>
+            <span className="font-bold text-lg tracking-tight">ViraWatch</span>
           </div>
-          <span className="font-bold text-xl tracking-tight">
-            ViraWatch <span className="text-cyan-400">AI</span>
-          </span>
+          <div className="hidden md:flex items-center gap-7 text-sm text-stone-600">
+            <a href="#numbers" className="hover:text-stone-900">This year</a>
+            <a href="#features" className="hover:text-stone-900">Features</a>
+            <a href="#how" className="hover:text-stone-900">How it works</a>
+          </div>
+          <Link href="/dashboard/" className="text-sm px-4 py-2 rounded-lg bg-stone-900 text-white font-medium hover:bg-stone-800">
+            Open dashboard
+          </Link>
         </div>
-        <div className="hidden md:flex items-center gap-8 text-sm text-slate-300">
-          <a href="#features" className="hover:text-white transition">Features</a>
-          <a href="#how" className="hover:text-white transition">How it works</a>
-        </div>
-        <Link
-          href="/dashboard/"
-          className="text-sm px-4 py-2 rounded-lg bg-white text-slate-900 font-medium hover:bg-slate-100 transition shadow-lg"
-        >
-          Open dashboard
-        </Link>
       </nav>
 
-      {/* Hero */}
-      <section className="max-w-7xl mx-auto px-6 md:px-10 pt-12 pb-24 md:pt-20 md:pb-32">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <section className="max-w-6xl mx-auto px-5 md:px-8 pt-12 pb-16 md:pt-20 md:pb-24">
+        <div className="grid lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-14 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-300 text-xs font-medium mb-6">
-              <span className="w-2 h-2 rounded-full bg-blue-400 pulse-dot" />
-              Updates every hour from public health data
-            </div>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05] mb-6">
-              What&apos;s going around
-              <br />
-              <span className="bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                right now?
-              </span>
+            <p className="text-sm font-semibold text-red-600 uppercase tracking-wider mb-4">Disease activity, updated every few hours</p>
+            <h1 className="text-5xl md:text-6xl font-black tracking-tight leading-[1.02] mb-6">
+              What&apos;s going around <span className="underline decoration-red-500 decoration-8 underline-offset-8">right now</span>?
             </h1>
-            <p className="text-lg text-slate-300 max-w-xl mb-8 leading-relaxed">
-              ViraWatch AI tracks which diseases are at their peak today. It reads WHO and CDC data, English-language news and Wikipedia readership, then an AI reads the latest official reports and explains what is happening, with sources you can check.
+            <p className="text-lg text-stone-600 max-w-xl mb-8 leading-relaxed">
+              ViraWatch reads real case reports, hospital data and official outbreak notices for 28 diseases, and shows which ones are at their peak today, with the numbers and sources behind every call.
             </p>
-            <Link
-              href="/dashboard/"
-              className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold shadow-xl shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.02] transition"
-            >
-              See what&apos;s peaking
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
-            </Link>
+            <div className="flex flex-wrap items-center gap-3">
+              <Link href="/dashboard/" className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 transition">
+                See what&apos;s peaking <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition" />
+              </Link>
+              <Link href="/dashboard/alerts/" className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white border border-stone-300 font-medium hover:bg-stone-100 transition">
+                Official alerts
+              </Link>
+            </div>
+            <dl className="grid grid-cols-3 gap-4 mt-10 max-w-md">
+              {[
+                ["28", "diseases tracked"],
+                ["7", "public data sources"],
+                ["$0", "open data, open AI"],
+              ].map(([n, label]) => (
+                <div key={label}>
+                  <dt className="text-2xl font-black tabular-nums">{n}</dt>
+                  <dd className="text-xs text-stone-500 mt-0.5">{label}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
-
           <LiveHero />
         </div>
       </section>
 
-      {/* Features */}
-      <section id="features" className="max-w-7xl mx-auto px-6 md:px-10 py-20 border-t border-white/10">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <h2 className="text-4xl font-bold tracking-tight mb-4">
-            Real data, checkable sources
-          </h2>
-          <p className="text-slate-400">
-            Every score comes from public data, and every AI assessment links to the sources it used.
-          </p>
+      <section id="numbers" className="bg-white border-y border-stone-200">
+        <div className="max-w-6xl mx-auto px-5 md:px-8 py-14">
+          <h2 className="text-3xl font-black tracking-tight mb-2">This year in numbers</h2>
+          <p className="text-stone-600 mb-8">Reported US cases so far in the year, against the same point last year. Source: CDC weekly notifiable disease reports.</p>
+          <YearInNumbers />
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[
-            { icon: TrendingUp, title: "Peak detection", desc: "Each disease is compared with its own past year, so you can see what is unusually high right now.", color: "from-red-500 to-pink-500" },
-            { icon: Brain, title: "AI briefing", desc: "On every update a free, open AI model reads the latest WHO and health-agency reports, checks them against the signals and writes a short briefing.", color: "from-purple-500 to-pink-500" },
-            { icon: Globe2, title: "Global coverage", desc: "28 diseases, from flu and dengue to Ebola and Nipah. Region filters show diseases named in reports from that region; scores themselves are worldwide.", color: "from-blue-500 to-cyan-500" },
-            { icon: Bell, title: "Official alerts", desc: "The latest outbreak notices from WHO, ECDC, UKHSA and CDC, gathered in one place.", color: "from-amber-500 to-orange-500" },
-            { icon: Shield, title: "Prevention guidance", desc: "Practical steps for each disease, including what actually helps against mosquitoes, water and airborne spread.", color: "from-emerald-500 to-teal-500" },
-            { icon: Database, title: "Symptom checker", desc: "Match your symptoms against tracked diseases in your browser. Nothing you enter leaves your device.", color: "from-indigo-500 to-purple-500" },
-          ].map((f) => (
-            <div
-              key={f.title}
-              className="group p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 hover:bg-white/[0.07] transition"
-            >
-              <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${f.color} grid place-items-center mb-4 shadow-lg`}>
-                <f.icon className="w-5 h-5 text-white" />
+      </section>
+
+      <section id="features" className="max-w-6xl mx-auto px-5 md:px-8 py-16">
+        <h2 className="text-3xl font-black tracking-tight mb-8">What you can do here</h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {FEATURES.map((f) => (
+            <div key={f.title} className="rounded-2xl bg-white border border-stone-200 p-6">
+              <div className="w-10 h-10 rounded-lg bg-red-50 text-red-600 grid place-items-center mb-4">
+                <f.icon className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">{f.title}</h3>
-              <p className="text-sm text-slate-400 leading-relaxed">{f.desc}</p>
+              <h3 className="font-bold mb-1.5">{f.title}</h3>
+              <p className="text-sm text-stone-600 leading-relaxed">{f.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* How it works */}
-      <section id="how" className="max-w-7xl mx-auto px-6 md:px-10 py-20 border-t border-white/10">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <h2 className="text-4xl font-bold tracking-tight mb-4">
-            How it works
-          </h2>
-          <p className="text-slate-400">
-            The whole process runs automatically, with no one updating it by hand.
+      <section id="how" className="bg-stone-900 text-stone-100">
+        <div className="max-w-6xl mx-auto px-5 md:px-8 py-16">
+          <h2 className="text-3xl font-black tracking-tight mb-10">How it works</h2>
+          <ol className="grid md:grid-cols-4 gap-8">
+            {STEPS.map((s, i) => (
+              <li key={s.title}>
+                <div className="text-sm font-bold text-red-400 mb-2">Step {i + 1}</div>
+                <h3 className="text-xl font-bold mb-2">{s.title}</h3>
+                <p className="text-sm text-stone-400 leading-relaxed">{s.desc}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="max-w-6xl mx-auto px-5 md:px-8 py-10">
+        <div className="rounded-2xl bg-amber-50 border border-amber-200 p-5 flex gap-4 items-start">
+          <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <p className="text-sm text-amber-900">
+            <strong>Medical disclaimer:</strong> ViraWatch gives general information about disease activity. A high score means a disease is unusually active compared with its own past, not that you personally are at risk. It is not medical advice; see a healthcare provider about your own health.
           </p>
         </div>
-        <div className="grid md:grid-cols-4 gap-6">
-          {[
-            { step: "01", title: "Collect", desc: "Pull hospital and lab data, outbreak notices, news volume and Wikipedia readership." },
-            { step: "02", title: "Score", desc: "Compare each disease with its own recent history to get a 0-100 peak score." },
-            { step: "03", title: "Research", desc: "AI reads official reports, checks the strongest signals and cites what it used." },
-            { step: "04", title: "Publish", desc: "The site rebuilds with the new data, and open pages refresh themselves." },
-          ].map((s, i) => (
-            <div key={s.step} className="relative">
-              <div className="text-6xl font-bold text-white/10 mb-2">{s.step}</div>
-              <h3 className="text-xl font-semibold mb-2">{s.title}</h3>
-              <p className="text-sm text-slate-400 leading-relaxed">{s.desc}</p>
-              {i < 3 && <ArrowRight className="hidden md:block absolute -right-3 top-6 w-5 h-5 text-white/20" />}
-            </div>
-          ))}
-        </div>
       </section>
 
-      {/* Warning banner */}
-      <section className="max-w-7xl mx-auto px-6 md:px-10 py-8">
-        <div className="rounded-2xl bg-amber-500/10 border border-amber-500/30 p-5 flex gap-4 items-start">
-          <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-          <div className="text-sm text-amber-100/90">
-            <strong className="text-amber-300">Medical disclaimer:</strong> ViraWatch AI gives general information about disease activity. It is not a substitute for professional medical advice, diagnosis, or treatment. A high score does not mean you are at risk personally. Always consult a qualified healthcare provider for medical concerns.
-          </div>
+      <footer className="border-t border-stone-200 py-8 text-center text-sm text-stone-500">
+        <div className="flex items-center justify-center gap-2 mb-2 text-stone-700">
+          <Globe2 className="w-4 h-4" /> ViraWatch
         </div>
-      </section>
-
-      <footer className="border-t border-white/10 mt-10 py-10 text-center text-sm text-slate-500">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <Activity className="w-4 h-4 text-blue-400" />
-            <span className="font-semibold text-slate-300">ViraWatch AI</span>
-          </div>
-          <p>Built on public data from WHO, CDC, ECDC, UKHSA, GDELT and Wikipedia.</p>
-        </div>
+        Built on public data from CDC, WHO, ECDC, UKHSA, GDELT and Wikipedia. Updated automatically on GitHub.
       </footer>
     </div>
   );
