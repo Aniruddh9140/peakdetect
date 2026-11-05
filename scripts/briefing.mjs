@@ -147,6 +147,15 @@ export async function writeBriefing(rows, others, url) {
       errors.push(`batch ${i / BATCH + 1}: ${e.message}`);
     }
   }
+  // One more try for diseases a failed batch or a rejected citation left without a summary.
+  const missing = rows.filter((r) => !assessments.some((a) => a.slug === r.slug)).slice(0, BATCH);
+  if (missing.length) {
+    try {
+      assessments.push(...(await ask(missing, [], url)).assessments);
+    } catch (e) {
+      errors.push(`retry: ${e.message}`);
+    }
+  }
   if (!assessments.length) throw new Error(errors.join("; "));
   if (errors.length) console.warn(`::warning::AI briefing: ${errors.join("; ")}`);
   return { assessments, emerging, generatedAt: new Date().toISOString(), model: MODEL };

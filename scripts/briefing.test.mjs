@@ -91,15 +91,16 @@ test("writeBriefing sends each disease's evidence and drops invented citations",
   }
 });
 
-test("writeBriefing covers diseases in batches and survives one failed batch", async () => {
+test("writeBriefing covers diseases in batches and retries the ones a failed batch missed", async () => {
   const rows = Array.from({ length: BATCH + 2 }, (_, i) => flu({ slug: i < BATCH ? "influenza" : "covid-19", name: i < BATCH ? "Influenza (flu)" : "COVID-19" }));
   const covid = "https://www.cdc.gov/covid";
   rows.at(-1).evidence = [{ url: covid, title: "COVID-19: US hospital admissions" }];
-  const ollama = await fakeOllama([500, reply({ assessments: [{ slug: "covid-19", summary: "Steady.", where: [], sources: [covid] }] })]);
+  const ollama = await fakeOllama([500, reply({ assessments: [{ slug: "covid-19", summary: "Steady.", where: [], sources: [covid] }] }), reply()]);
   try {
     const out = await writeBriefing(rows, [], ollama.url);
-    assert.equal(ollama.requests.length, 2);
-    assert.deepEqual(out.assessments.map((a) => a.slug), ["covid-19"]);
+    assert.equal(ollama.requests.length, 3);
+    assert.deepEqual(ollama.requests[2].format.properties.assessments.items.properties.slug.enum.includes("covid-19"), false);
+    assert.deepEqual(out.assessments.map((a) => a.slug), ["covid-19", "influenza"]);
   } finally {
     ollama.close();
   }
