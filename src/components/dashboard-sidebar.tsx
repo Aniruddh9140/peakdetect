@@ -69,7 +69,7 @@ export function DashboardSidebar() {
       {/* Mobile top bar */}
       <div className="lg:hidden sticky top-0 z-40 flex items-center justify-between h-14 px-4 bg-white border-b border-slate-200">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 grid place-items-center">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 shadow-md shadow-blue-500/30 grid place-items-center">
             <Activity className="w-4 h-4 text-white" />
           </div>
           <span className="font-bold text-slate-900">
@@ -102,7 +102,7 @@ export function DashboardSidebar() {
       >
         <div className="h-14 flex items-center justify-between px-5 border-b border-slate-200">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 grid place-items-center shadow-md">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 shadow-md shadow-blue-500/30 grid place-items-center shadow-md">
               <Activity className="w-4 h-4 text-white" />
             </div>
             <span className="font-bold text-slate-900 tracking-tight">

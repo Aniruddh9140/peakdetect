@@ -33,14 +33,14 @@ export default function DashboardOverview() {
     <div className="fade-in space-y-6">
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-black tracking-tight text-stone-900">This week in disease activity</h1>
-          <p className="text-stone-500 mt-1 text-sm">
+          <h1 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900">This week in disease activity</h1>
+          <p className="text-slate-500 mt-1 text-sm">
             {data ? `Updated ${relativeTime(data.generatedAt)}. ` : ""}Diseases named in reports from{" "}
             <select
               aria-label="Region"
               value={region}
               onChange={(e) => setRegion(e.target.value)}
-              className="border-0 border-b border-dashed border-stone-400 bg-transparent text-stone-800 font-medium text-sm focus:border-red-500 focus:outline-none cursor-pointer"
+              className="border-0 border-b border-dashed border-slate-400 bg-transparent text-slate-800 font-medium text-sm focus:border-blue-500 focus:outline-none cursor-pointer"
             >
               {REGIONS.map((r) => (
                 <option key={r}>{r}</option>
@@ -57,19 +57,19 @@ export default function DashboardOverview() {
       {data && top && (
         <>
           <Card className={cn("border-l-4 p-6", PHASE_STYLES[top.displayPhase]?.solid.replace("bg-", "border-l-"))}>
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-stone-500 mb-2">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
               Top story <PhaseBadge phase={top.displayPhase} />
             </div>
-            <h2 className="text-xl md:text-2xl font-black text-stone-900">
+            <h2 className="text-xl md:text-2xl font-black text-slate-900">
               {top.info.emoji} {top.name}
             </h2>
-            <p className="text-stone-700 mt-2 max-w-3xl leading-relaxed">{top.ai?.summary ?? top.factors[0]}</p>
+            <p className="text-slate-700 mt-2 max-w-3xl leading-relaxed">{top.ai?.summary ?? top.factors[0]}</p>
             {top.ai && (
-              <p className="text-xs text-stone-500 mt-2">
+              <p className="text-xs text-slate-500 mt-2">
                 Source: <SourceLinks urls={top.ai.sources} />. Summary written by a small open-source AI from this source; it can make mistakes.
               </p>
             )}
-            <p className="text-xs text-stone-500 mt-3">
+            <p className="text-xs text-slate-500 mt-3">
               Scores compare each disease with its own past. They do not count how many people are sick or say how likely you are to catch anything.
             </p>
           </Card>
@@ -82,14 +82,14 @@ export default function DashboardOverview() {
           </div>
 
           <section>
-            <h2 className="text-lg font-bold text-stone-900 mb-1">This year in numbers</h2>
-            <p className="text-sm text-stone-500 mb-3">Reported US cases so far this year against the same point last year (CDC).</p>
+            <h2 className="text-lg font-bold text-slate-900 mb-1">This year in numbers</h2>
+            <p className="text-sm text-slate-500 mb-3">Reported US cases so far this year against the same point last year (CDC).</p>
             <YearInNumbers />
           </section>
 
           {shown.length === 0 && (
             <Card>
-              <CardContent className="p-6 text-sm text-stone-500">
+              <CardContent className="p-6 text-sm text-slate-500">
                 No recent reports name {region}. This does not mean there is no disease activity there, only that the sources we read did not mention it.
               </CardContent>
             </Card>
@@ -103,7 +103,7 @@ export default function DashboardOverview() {
                     <CardTitle>Ranked by peak score</CardTitle>
                     <CardDescription>Higher means more unusual for this disease than its own past, not more cases</CardDescription>
                   </div>
-                  <Link href="/dashboard/predictions/" className="text-sm font-medium text-red-600 hover:text-red-700 inline-flex items-center gap-1 whitespace-nowrap">
+                  <Link href="/dashboard/predictions/" className="text-sm font-medium text-blue-600 hover:text-blue-700 inline-flex items-center gap-1 whitespace-nowrap">
                     See all <ArrowUpRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
@@ -116,20 +116,20 @@ export default function DashboardOverview() {
                       <Link
                         key={d.slug}
                         href={`/dashboard/predictions/?disease=${d.slug}`}
-                        className="flex items-center gap-4 p-3 rounded-xl border border-stone-100 hover:bg-stone-50 hover:border-stone-200 transition"
+                        className="flex items-center gap-4 p-3 rounded-xl border border-slate-100 hover:bg-slate-50 hover:border-slate-200 transition"
                       >
-                        <span className="w-5 text-sm font-bold text-stone-400 tabular-nums">{i + 1}</span>
+                        <span className="w-5 text-sm font-bold text-slate-400 tabular-nums">{i + 1}</span>
                         <div className="text-2xl shrink-0">{d.info.emoji}</div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap mb-1.5">
-                            <span className="font-semibold text-stone-900 truncate">{d.name}</span>
+                            <span className="font-semibold text-slate-900 truncate">{d.name}</span>
                             <PhaseBadge phase={d.displayPhase} />
-                            {cases && <span className="text-xs text-stone-500">{cases.value.toLocaleString("en-US")} US cases a week</span>}
+                            {cases && <span className="text-xs text-slate-500">{cases.value.toLocaleString("en-US")} US cases a week</span>}
                           </div>
                           <ScoreBar disease={d} />
-                          <p className="text-xs text-stone-500 mt-1.5 line-clamp-2">{d.ai?.summary ?? d.factors[0]}</p>
+                          <p className="text-xs text-slate-500 mt-1.5 line-clamp-2">{d.ai?.summary ?? d.factors[0]}</p>
                         </div>
-                        <div className="text-lg font-bold text-stone-900 shrink-0 tabular-nums">{d.score}</div>
+                        <div className="text-lg font-bold text-slate-900 shrink-0 tabular-nums">{d.score}</div>
                       </Link>
                     );
                   })}
@@ -151,7 +151,7 @@ export default function DashboardOverview() {
                         return (
                           <li key={d.slug} className="flex items-center gap-2 text-sm">
                             <span>{d.info.emoji}</span>
-                            <Link href={`/dashboard/predictions/?disease=${d.slug}`} className="flex-1 font-medium text-stone-800 hover:underline truncate">
+                            <Link href={`/dashboard/predictions/?disease=${d.slug}`} className="flex-1 font-medium text-slate-800 hover:underline truncate">
                               {d.name}
                             </Link>
                             <span className={cn("inline-flex items-center gap-0.5 font-semibold tabular-nums", change > 0 ? "text-red-600" : "text-emerald-700")}>
@@ -164,7 +164,7 @@ export default function DashboardOverview() {
                       })}
                     </ul>
                   ) : (
-                    <p className="text-sm text-stone-500">No score changed since the last update.</p>
+                    <p className="text-sm text-slate-500">No score changed since the last update.</p>
                   )}
                 </CardContent>
               </Card>
@@ -172,7 +172,7 @@ export default function DashboardOverview() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Bell className="w-4 h-4 text-red-600" />
+                    <Bell className="w-4 h-4 text-blue-600" />
                     Latest official alerts
                   </CardTitle>
                 </CardHeader>
@@ -180,15 +180,15 @@ export default function DashboardOverview() {
                   <ul className="space-y-3">
                     {alerts.slice(0, 5).map((a) => (
                       <li key={a.url} className="text-sm">
-                        <a href={a.url} target="_blank" rel="noreferrer" className="font-medium text-stone-800 hover:text-red-700 leading-snug">
+                        <a href={a.url} target="_blank" rel="noreferrer" className="font-medium text-slate-800 hover:text-blue-700 leading-snug">
                           {a.title}
                         </a>
-                        <div className="text-xs text-stone-500 mt-0.5">{a.source} · {a.date}</div>
+                        <div className="text-xs text-slate-500 mt-0.5">{a.source} · {a.date}</div>
                       </li>
                     ))}
-                    {!alerts.length && <li className="text-sm text-stone-500">No recent alerts for this region.</li>}
+                    {!alerts.length && <li className="text-sm text-slate-500">No recent alerts for this region.</li>}
                   </ul>
-                  <Link href="/dashboard/alerts/" className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-red-600 hover:text-red-700">
+                  <Link href="/dashboard/alerts/" className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700">
                     All alerts <ArrowUpRight className="w-3.5 h-3.5" />
                   </Link>
                 </CardContent>
@@ -203,8 +203,8 @@ export default function DashboardOverview() {
                   <CardContent className="space-y-3">
                     {data.ai?.emerging.map((e) => (
                       <div key={e.name} className="text-sm">
-                        <div className="font-medium text-stone-900">{e.name}</div>
-                        <p className="text-stone-600 leading-snug mt-0.5">{e.summary}</p>
+                        <div className="font-medium text-slate-900">{e.name}</div>
+                        <p className="text-slate-600 leading-snug mt-0.5">{e.summary}</p>
                         <SourceLinks urls={e.sources} />
                       </div>
                     ))}

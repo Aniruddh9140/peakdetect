@@ -46,25 +46,25 @@ function Detail({ disease }: { disease: Disease }) {
               ["Incubation", disease.info.incubation],
               ["Vaccine", disease.info.vaccine ? "Available" : "None in general use"],
             ].map(([label, value]) => (
-              <div key={label} className="p-3 rounded-xl border border-stone-200">
-                <div className="text-xs text-stone-500 mb-0.5">{label}</div>
-                <div className="font-medium text-stone-900">{value}</div>
+              <div key={label} className="p-3 rounded-xl border border-slate-200">
+                <div className="text-xs text-slate-500 mb-0.5">{label}</div>
+                <div className="font-medium text-slate-900">{value}</div>
               </div>
             ))}
           </div>
           <div>
-            <div className="text-xs text-stone-500 mb-1.5">Common symptoms</div>
+            <div className="text-xs text-slate-500 mb-1.5">Common symptoms</div>
             <div className="flex flex-wrap gap-1.5">
               {disease.info.symptoms.map((s) => (
-                <span key={s} className="px-2.5 py-1 rounded-full bg-stone-100 text-stone-700 text-xs">{s}</span>
+                <span key={s} className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs">{s}</span>
               ))}
             </div>
           </div>
 
           {disease.ai && (
-            <div className="p-4 rounded-xl bg-stone-50 border border-stone-200">
-              <h3 className="text-sm font-semibold text-stone-900 flex items-center gap-1.5 mb-1.5">
-                <Sparkles className="w-4 h-4 text-red-600" /> Summary
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+              <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-1.5 mb-1.5">
+                <Sparkles className="w-4 h-4 text-blue-600" /> Summary
               </h3>
               <p className="text-sm text-slate-800 leading-relaxed">{disease.ai.summary}</p>
               {disease.ai.where.length > 0 && (
