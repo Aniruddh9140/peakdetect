@@ -25,9 +25,9 @@ Everything here is free: GitHub Pages and Actions cost nothing for a public repo
 
 | Signal | Source | Weight |
 |---|---|---|
-| Case data | CDC hospital admissions and WHO FluNet (flu, RSV, COVID-19); CDC weekly notifiable disease reports (measles, whooping cough, dengue, West Nile, Legionnaires', malaria, mpox, hepatitis A, chikungunya, meningococcal disease) | 60% |
+| Case data | CDC hospital admissions and WHO FluNet (flu, RSV, COVID-19); CDC weekly notifiable disease reports (measles, whooping cough, dengue, West Nile, Legionnaires', malaria, mpox, hepatitis A, chikungunya, meningococcal disease) | 50% |
 | News coverage | GDELT global news index | 20% |
-| Public interest | Wikipedia pageviews | 20% |
+| Public interest | Wikipedia pageviews | 30% |
 | Official reports | WHO Disease Outbreak News | up to +10 points |
 
 Each signal compares a disease with its own history, so 100 means "at its highest of the past year". It does not count how many people are sick. A missing signal's weight is shared between the others.

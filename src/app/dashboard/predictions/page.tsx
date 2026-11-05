@@ -77,6 +77,28 @@ function Detail({ disease }: { disease: Disease }) {
           )}
 
           <div>
+            <h3 className="text-sm font-semibold text-slate-900 mb-2">What makes up the score</h3>
+            <div className="grid sm:grid-cols-3 gap-3">
+              {/* Same weights as scripts/analyze.mjs; a missing signal's share goes to the others. */}
+              {[
+                ["Reported cases", "50%", signals.surveillance.length ? Math.max(...signals.surveillance.map((s) => s.heat)) : null],
+                ["Wikipedia interest", "30%", signals.wiki?.heat ?? null],
+                ["News coverage", "20%", signals.news?.heat ?? null],
+              ].map(([label, weight, value]) => (
+                <div key={label as string} className="p-3 rounded-xl border border-slate-200">
+                  <div className="text-xs text-slate-500 mb-1">
+                    {label} <span className="text-slate-400">· {weight} of score</span>
+                  </div>
+                  <div className="text-lg font-bold text-slate-900">{value === null ? "No data" : `${Math.round(value as number)}/100`}</div>
+                  <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden mt-1.5">
+                    <div className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-600" style={{ width: `${value ?? 0}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
             <h3 className="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-1.5">
               <Info className="w-4 h-4 text-blue-600" /> What the data shows
             </h3>

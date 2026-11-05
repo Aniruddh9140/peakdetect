@@ -81,7 +81,7 @@ export default function SourcesPage() {
                 How the peak score works
               </h3>
               <p className="text-sm text-slate-700 leading-relaxed">
-                On every update, each signal is compared with that disease&apos;s own history. Reported cases count for 60%, news coverage 20% and Wikipedia readership 20%. If a signal is missing, the others share its weight. Official WHO outbreak reports add up to 10 points. Case data comes from CDC hospital admissions and WHO FluNet (flu, RSV, COVID-19) and CDC&apos;s weekly notifiable disease reports (measles, whooping cough, dengue, West Nile, Legionnaires&apos;, malaria, mpox and more). Weekly CDC counts are read as 8-week averages, and a backlog of late reports landing in one week is capped so it cannot fake a peak. Without case data or a WHO report, a disease can never be marked as peaking.
+                On every update, each signal is compared with that disease&apos;s own history. Reported cases count for 50%, Wikipedia readership 30% and news coverage 20%, so every disease blends hard case numbers with how many people are looking it up. If a signal is missing, the others share its weight. Official WHO outbreak reports add up to 10 points. Case data comes from CDC hospital admissions and WHO FluNet (flu, RSV, COVID-19) and CDC&apos;s weekly notifiable disease reports (measles, whooping cough, dengue, West Nile, Legionnaires&apos;, malaria, mpox and more). Weekly CDC counts are read as 8-week averages, and a backlog of late reports landing in one week is capped so it cannot fake a peak. Without case data or a WHO report, a disease can never be marked as peaking.
               </p>
             </CardContent>
           </Card>

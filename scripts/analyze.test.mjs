@@ -116,3 +116,8 @@ test("capSpikes trims a catch-up backlog but keeps a real, steady rise", () => {
   assert.deepEqual(capSpikes(rising), rising);
   assert.deepEqual(capSpikes([0, 0, 0, 0, 5]), [0, 0, 0, 0, 5]);
 });
+
+test("case data and Wikipedia readership both move the score", () => {
+  // Cases count for 50%, Wikipedia 30%; with no news they share its weight.
+  assert.equal(score({ surveillance: { heat: 40, growth: 0 }, wiki: { heat: 100, growth: 0 } }).score, 63);
+});

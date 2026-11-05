@@ -2,7 +2,7 @@
 // A score compares a disease with its own recent history, not with other diseases.
 
 // Reported cases are the most reliable signal, so they carry the most weight.
-const WEIGHTS = { surveillance: 0.6, news: 0.2, wiki: 0.2 };
+const WEIGHTS = { surveillance: 0.5, wiki: 0.3, news: 0.2 };
 const MIN_ARTICLES_PER_DAY = 5;
 const PEAK_SCORE = 70;
 
